@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kurumsal İş Takip Platformu | Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --dark-bg: #0f172a;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        body.night-mode {
+            --primary-color: #5a9ee4;
+            --card-bg: #1e293b;
+            --text-main: #f1f5f9;
+            --text-light: #94a3b8;
+            --border-color: #334155;
+            background-color: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            margin: 0;
+            padding-bottom: 100px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        #logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: -webkit-linear-gradient(0deg, #4cc9f0, #4361ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .live-ticker-wrapper {
+            display: flex;
+            gap: 15px;
+            margin-left: 30px;
+        }
+
+        .ticker-pill {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 6px 16px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .currency-symbol { color: #ffd700; }
+        .trend-up { color: #4ade80; }
+        .trend-down { color: #f87171; }
+
+        .header-right { display: flex; gap: 10px; }
+        .header-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .header-btn:hover { background: rgba(255,255,255,0.2); }
+
+        /* CARDS */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin: 20px auto;
+            max-width: 1200px;
+            border: 1px solid var(--border-color);
+            transition: 0.3s;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, var(--card-bg), rgba(67, 97, 238, 0.05));
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid var(--primary-color);
+            position: relative;
+        }
+
+        .stat-card h4 { margin: 0 0 10px 0; color: var(--text-light); font-size: 0.9rem; }
+        .stat-card p { font-size: 1.8rem; font-weight: 700; margin: 0; }
+        .stat-card i.bg-icon {
+            position: absolute; right: 20px; bottom: 20px; font-size: 3rem; opacity: 0.05; color: var(--text-main);
+        }
+
+        /* FORMS */
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0 15px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            box-sizing: border-box;
+        }
+        
+        .button-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+        button.action-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        
+        #submit-button { background-color: var(--primary-color); }
+        #save-and-new-button { background-color: var(--text-light); }
+        #clear-btn { background-color: var(--danger-color); margin-left: auto; }
+        
+        /* TABLE */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background-color: rgba(67, 97, 238, 0.05); color: var(--primary-color); padding: 15px; text-align: left; font-size: 0.85rem; }
+        td { padding: 15px; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; }
+        tr:hover { background-color: rgba(0,0,0,0.02); }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .status-ok { background: rgba(46, 204, 113, 0.15); color: var(--success-color); }
+        .status-wait { background: rgba(243, 156, 18, 0.15); color: var(--warning-color); }
+
+        .row-actions button {
+            width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; color: white; margin-right: 5px;
+        }
+        .btn-edit { background: var(--warning-color); }
+        .btn-delete { background: var(--danger-color); }
+
+        /* STICKY FOOTER */
+        #live-total-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 10px 30px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            z-index: 999;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .total-badge {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .live-amount {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none; 
+            position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background-color: var(--card-bg); padding: 30px; border-radius: 12px; width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative;
+        }
+        .close-modal { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: var(--text-light); }
+
+        /* Toast */
+        #toast {
+            visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center;
+            border-radius: 4px; padding: 16px; position: fixed; z-index: 3000; left: 50%; bottom: 30px; transform: translateX(-50%);
+        }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+        /* Charts */
+        .charts-container { display: flex; gap: 20px; flex-wrap: wrap; }
+        .chart-wrapper { flex: 1; min-width: 300px; height: 300px; position: relative; }
+        
+        /* Pagination */
+        .pagination { display: flex; justify-content: center; gap: 10px; margin-top: 20px; align-items: center;}
+    </style>
+</head>
+<body>
+    <header>
+        <div style="display: flex; align-items: center;">
+            <div id="logo"><i class="fas fa-layer-group"></i> İş Takip Pro</div>
+            
+            <div class="live-ticker-wrapper">
+                <div class="ticker-pill">
+                    <i class="fas fa-dollar-sign currency-symbol"></i>
+                    <span id="live-usd">--.--</span>
+                    <i id="usd-arrow" class="fas fa-minus"></i>
+                </div>
+                <div class="ticker-pill">
+                    <i class="fas fa-euro-sign currency-symbol"></i>
+                    <span id="live-eur">--.--</span>
+                    <i id="eur-arrow" class="fas fa-minus"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <button class="header-btn" onclick="window.open('https://google.com','_blank')"><i class="fab fa-google"></i></button>
+            <button class="header-btn" onclick="window.open('https://www.tcmb.gov.tr','_blank')">TCMB</button>
+            <button class="header-btn" id="mode-toggle-btn"><i class="fas fa-moon"></i></button>
+        </div>
+    </header>
+
+    <main>
+        <!-- İSTATİSTİK KARTLARI -->
+        <div class="card">
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <h4>Toplam İş Adedi</h4>
+                    <p id="stat-total-jobs">0</p>
+                    <i class="fas fa-briefcase bg-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <h4>Bu Ay En Çok İş (Adet)</h4>
+                    <p id="stat-top-company-count">-</p>
+                    <i class="fas fa-trophy bg-icon"></i>
+                </div>
+                <div class="stat-card" style="border-left-color: var(--success-color);">
+                    <h4>Ciro Şampiyonu (Canlı Kur)</h4>
+                    <p id="stat-top-company-value">-</p>
+                    <i class="fas fa-chart-line bg-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- VERİ GİRİŞİ -->
+        <div class="card">
+            <h3><i class="fas fa-edit"></i> Yeni İş Girişi</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <input type="text" id="firm-name" placeholder="Firma İsmi" list="firmNames" />
+                <datalist id="firmNames"></datalist>
+                <input type="text" id="program-name" placeholder="Program / Proje İsmi" />
+            </div>
+            
+            <input type="text" id="work-description" placeholder="Yapılan İş Açıklaması" list="workDescriptions" />
+            <datalist id="workDescriptions"></datalist>
+
+            <div style="display: flex; gap: 15px;">
+                <input type="number" id="amount" placeholder="Tutar" step="0.01" style="flex: 2;" />
+                <select id="currency" style="flex: 1;">
+                    <option value="TL">TL (₺)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                </select>
+            </div>
+
+            <div style="margin: 15px 0;">
+                <h4 style="margin-bottom: 5px; color: var(--text-light); font-size: 0.9rem;">İşlem Türü</h4>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <label><input type="checkbox" name="islem" value="Lazer" /> Lazer</label>
+                    <label><input type="checkbox" name="islem" value="Büküm" /> Büküm</label>
+                    <label><input type="checkbox" name="islem" value="Kaynak" /> Kaynak</label>
+                    <label><input type="checkbox" name="islem" value="Makas" /> Makas</label>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button id="submit-button" class="action-btn" onclick="addData()"><i class="fas fa-plus"></i> Ekle</button>
+                <button id="save-and-new-button" class="action-btn" onclick="addDataAndNew()"><i class="fas fa-check-double"></i> Ekle & Yeni</button>
+                <button class="action-btn" style="background: var(--success-color);" onclick="exportToCSV()"><i class="fas fa-file-excel"></i> Excel</button>
+                <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="importCSV(event)" />
+                <button class="action-btn" style="background: var(--primary-color);" onclick="document.getElementById('csv-file-input').click()"><i class="fas fa-upload"></i> Yükle</button>
+                <button id="clear-btn" class="action-btn" onclick="verifyPIN()"><i class="fas fa-trash"></i> Temizle</button>
+            </div>
+        </div>
+
+        <!-- İŞ LİSTESİ -->
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3><i class="fas fa-list"></i> İş Listesi</h3>
+                <input type="text" id="search-input" placeholder="Ara..." oninput="filterTable()" style="width: 200px; margin: 0;" />
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Firma</th>
+                            <th>Açıklama</th>
+                            <th>Tutar</th>
+                            <th>Kur Karşılığı (TL)</th>
+                            <th>Durum</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <button class="header-btn" onclick="prevPage()"><i class="fas fa-chevron-left"></i></button>
+                <span id="page-info">Sayfa 1</span>
+                <button class="header-btn" onclick="nextPage()"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <!-- GRAFİKLER -->
+        <div class="card">
+            <div class="charts-container">
+                <div class="chart-wrapper">
+                    <canvas id="firm-performance-chart"></canvas>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="firm-revenue-share-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SABİT ALT BAR -->
+    <div id="live-total-bar">
+        <i class="fas fa-wallet" style="font-size: 1.5rem; color: #4cc9f0;"></i>
+        <div class="total-badge">CANLI KUR</div>
+        <div class="live-amount" id="sticky-live-total">0,00 ₺</div>
+    </div>
+
+    <!-- TOAST & MODALS -->
+    <div id="toast">Bildirim</div>
+    
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <p>Bu kaydı silmek istediğinize emin misiniz?</p>
+            <div class="button-group">
+                <button class="action-btn" style="background: var(--danger-color);" onclick="confirmDelete()">Evet, Sil</button>
+                <button class="action-btn" style="background: #999;" onclick="closeModal()">İptal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // --- GLOBAL DEĞİŞKENLER ---
+        let entries = JSON.parse(localStorage.getItem('entries')) || [];
+        let filteredEntries = [];
+        let editingIndex = null;
+        let deleteIndex = null;
+        let currentPage = 1;
+        const rowsPerPage = 10;
+        
+        // Varsayılan Kur (Binance bağlanana kadar)
+        window.liveRates = {
+            USD: 30.00,
+            EUR: 33.00,
+            USD_TRY_RAW: 0,
+            EUR_USD_RAW: 0,
+            lastUpdate: 0
+        };
+
+        // DOM Elementleri
+        const els = {
+            tableBody: document.getElementById('table-body'),
+            liveUsd: document.getElementById('live-usd'),
+            liveEur: document.getElementById('live-eur'),
+            stickyTotal: document.getElementById('sticky-live-total'),
+            usdArrow: document.getElementById('usd-arrow'),
+            eurArrow: document.getElementById('eur-arrow'),
+            statTotalJobs: document.getElementById('stat-total-jobs'),
+            statTopCount: document.getElementById('stat-top-company-count'),
+            statTopValue: document.getElementById('stat-top-company-value')
+        };
+
+        // --- BAŞLANGIÇ ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initWebSocket();
+            renderTable();
+            updateStats();
+            updateCharts();
+            updateDatalists();
+            
+            // Gece Modu Kontrolü
+            if(localStorage.getItem('nightMode') === 'true') {
+                document.body.classList.add('night-mode');
+            }
+        });
+
+        document.getElementById('mode-toggle-btn').addEventListener('click', () => {
+            document.body.classList.toggle('night-mode');
+            localStorage.setItem('nightMode', document.body.classList.contains('night-mode'));
+            updateCharts(); // Renkleri güncellemek için
+        });
+
+        // --- WEBSOCKET (BINANCE) ---
+        function initWebSocket() {
+            const wsUrl = "wss://stream.binance.com:9443/stream?streams=usdttry@trade/eurusdt@trade";
+            const ws = new WebSocket(wsUrl);
+
+            ws.onmessage = (event) => {
+                const msg = JSON.parse(event.data);
+                const stream = msg.stream;
+                const price = parseFloat(msg.data.p);
+
+                if (stream === 'usdttry@trade') {
+                    window.liveRates.USD_TRY_RAW = price;
+                    window.liveRates.USD = price;
+                    updateRateUI('USD', price);
+                } else if (stream === 'eurusdt@trade') {
+                    window.liveRates.EUR_USD_RAW = price;
+                }
+
+                // Çapraz Kur Hesapla: EUR/TRY = USD/TRY * EUR/USD
+                if (window.liveRates.USD_TRY_RAW > 0 && window.liveRates.EUR_USD_RAW > 0) {
+                    const eurTry = window.liveRates.USD_TRY_RAW * window.liveRates.EUR_USD_RAW;
+                    window.liveRates.EUR = eurTry;
+                    updateRateUI('EUR', eurTry);
+                }
+
+                // Arayüzü Güncelle (Throttled: 500ms)
+                const now = Date.now();
+                if (now - window.liveRates.lastUpdate > 500) {
+                    recalculateLiveValues();
+                    window.liveRates.lastUpdate = now;
+                }
+            };
+        }
+
+        function updateRateUI(currency, price) {
+            const el = currency === 'USD' ? els.liveUsd : els.liveEur;
+            const arrow = currency === 'USD' ? els.usdArrow : els.eurArrow;
+            
+            const prev = parseFloat(el.getAttribute('data-val')) || 0;
+            el.innerText = price.toFixed(3);
+            el.setAttribute('data-val', price);
+
+            if (price > prev) {
+                el.className = "trend-up";
+                arrow.className = "fas fa-caret-up trend-up";
+            } else if (price < prev) {
+                el.className = "trend-down";
+                arrow.className = "fas fa-caret-down trend-down";
+            }
+        }
+
+        // --- CANLI HESAPLAMALAR ---
+        function recalculateLiveValues() {
+            // 1. Sticky Footer (Toplam Net Varlık)
+            let totalTL = 0;
+            entries.forEach(e => {
+                let val = parseFloat(e.amount) || 0;
+                if(e.currency === 'USD') val *= window.liveRates.USD;
+                if(e.currency === 'EUR') val *= window.liveRates.EUR;
+                totalTL += val;
+            });
+            els.stickyTotal.innerText = totalTL.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " ₺";
+
+            // 2. Ciro Şampiyonu (Anlık Kura Göre)
+            const firmTotals = {};
+            const now = new Date();
+            entries.forEach(e => {
+                // Sadece Bu Ay
+                const d = new Date(e.date.split('.').reverse().join('-'));
+                if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
+                     let val = parseFloat(e.amount) || 0;
+                    if(e.currency === 'USD') val *= window.liveRates.USD;
+                    if(e.currency === 'EUR') val *= window.liveRates.EUR;
+                    
+                    if(!firmTotals[e.firmName]) firmTotals[e.firmName] = 0;
+                    firmTotals[e.firmName] += val;
+                }
+            });
+
+            let topFirm = "-";
+            let maxVal = 0;
+            for(const [f, v] of Object.entries(firmTotals)) {
+                if(v > maxVal) { maxVal = v; topFirm = f; }
+            }
+
+            if(topFirm !== "-") {
+                els.statTopValue.innerHTML = `<strong>${topFirm}</strong> <br> <span style="font-size:0.8em; color:#2ecc71">${maxVal.toLocaleString('tr-TR')} ₺</span>`;
+            } else {
+                els.statTopValue.innerHTML = "-";
+            }
+
+            // Tablodaki "Kur Karşılığı" sütununu güncelle (sadece o an ekranda olanları)
+            updateTableCurrencyCells();
+        }
+
+        function updateTableCurrencyCells() {
+            const rows = document.querySelectorAll('#table-body tr');
+            rows.forEach(row => {
+                const amount = parseFloat(row.getAttribute('data-amount'));
+                const curr = row.getAttribute('data-curr');
+                const cell = row.querySelector('.live-tl-cell');
+                
+                if(cell && amount) {
+                    let val = amount;
+                    if(curr === 'USD') val *= window.liveRates.USD;
+                    if(curr === 'EUR') val *= window.liveRates.EUR;
+                    cell.innerText = val.toLocaleString('tr-TR', {maximumFractionDigits:2}) + " ₺";
+                }
+            });
+        }
+
+        // --- CRUD İŞLEMLERİ ---
+        function addData(andNew = false) {
+            const firm = document.getElementById('firm-name').value;
+            const desc = document.getElementById('work-description').value;
+            const amount = document.getElementById('amount').value;
+            const curr = document.getElementById('currency').value;
+            const prog = document.getElementById('program-name').value;
+            
+            // Checkboxlar
+            const checked = Array.from(document.querySelectorAll('input[name="islem"]:checked')).map(c => c.value);
+
+            if(!firm || !amount) {
+                showToast("Firma ve Tutar zorunludur!");
+                return;
+            }
+
+            const entry = {
+                date: new Date().toLocaleDateString('tr-TR'),
+                firmName: firm,
+                description: desc,
+                amount: parseFloat(amount),
+                currency: curr,
+                programName: prog,
+                islem: checked,
+                muhasebeyeVerildi: false
+            };
+
+            if(editingIndex !== null) {
+                entries[editingIndex] = entry;
+                editingIndex = null;
+                document.getElementById('submit-button').innerHTML = '<i class="fas fa-plus"></i> Ekle';
+                showToast("Kayıt Güncellendi");
+            } else {
+                entries.unshift(entry); // En başa ekle
+                showToast("Kayıt Eklendi");
+            }
+
+            saveData();
+            if(!andNew) clearForm();
+        }
+
+        function addDataAndNew() {
+            addData(true);
+        }
+
+        function clearForm() {
+            document.getElementById('firm-name').value = "";
+            document.getElementById('work-description').value = "";
+            document.getElementById('amount').value = "";
+            document.getElementById('program-name').value = "";
+            document.querySelectorAll('input[name="islem"]').forEach(c => c.checked = false);
+            editingIndex = null;
+            document.getElementById('submit-button').innerHTML = '<i class="fas fa-plus"></i> Ekle';
+        }
+
+        function editEntry(index) {
+            // Global entries listesinden doğru indexi bulmamız lazım (filtrelenmiş olabilir)
+            // Basitlik için filteredEntries üzerinden gidelim veya ID kullanalım.
+            // Burada filteredEntries ile global index eşleşmesi yapıyoruz.
+            const realIndex = entries.indexOf(filteredEntries[index]);
+            const e = entries[realIndex];
+
+            document.getElementById('firm-name').value = e.firmName;
+            document.getElementById('work-description').value = e.description;
+            document.getElementById('amount').value = e.amount;
+            document.getElementById('currency').value = e.currency;
+            document.getElementById('program-name').value = e.programName;
+            
+            document.querySelectorAll('input[name="islem"]').forEach(c => {
+                c.checked = e.islem && e.islem.includes(c.value);
+            });
+
+            editingIndex = realIndex;
+            document.getElementById('submit-button').innerHTML = '<i class="fas fa-save"></i> Güncelle';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function askDelete(index) {
+            deleteIndex = entries.indexOf(filteredEntries[index]);
+            document.getElementById('confirm-modal').style.display = "flex";
+        }
+
+        function confirmDelete() {
+            if(deleteIndex !== null) {
+                entries.splice(deleteIndex, 1);
+                saveData();
+                closeModal();
+                showToast("Kayıt Silindi");
+            }
+        }
+
+        function toggleStatus(index) {
+            const realIndex = entries.indexOf(filteredEntries[index]);
+            entries[realIndex].muhasebeyeVerildi = !entries[realIndex].muhasebeyeVerildi;
+            saveData();
+        }
+
+        function saveData() {
+            localStorage.setItem('entries', JSON.stringify(entries));
+            renderTable();
+            updateStats();
+            updateCharts();
+            updateDatalists();
+            recalculateLiveValues();
+        }
+
+        // --- TABLE & RENDER ---
+        function renderTable() {
+            // Filtreleme
+            const term = document.getElementById('search-input').value.toLowerCase();
+            filteredEntries = entries.filter(e => 
+                e.firmName.toLowerCase().includes(term) || 
+                e.programName.toLowerCase().includes(term)
+            );
+
+            // Sayfalama
+            const totalPages = Math.ceil(filteredEntries.length / rowsPerPage);
+            if(currentPage > totalPages) currentPage = totalPages || 1;
+            
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pageData = filteredEntries.slice(start, end);
+
+            let html = "";
+            pageData.forEach((e, i) => {
+                const statusClass = e.muhasebeyeVerildi ? 'status-ok' : 'status-wait';
+                const statusText = e.muhasebeyeVerildi ? 'Faturalandı' : 'Bekliyor';
+                
+                // Canlı TL hesabı için attribute ekliyoruz
+                html += `
+                <tr data-amount="${e.amount}" data-curr="${e.currency}">
+                    <td>${e.date}</td>
+                    <td><strong>${e.firmName}</strong></td>
+                    <td>${e.description} <small style="color:#888">(${e.islem?.join(', ') || ''})</small></td>
+                    <td>${e.amount} ${e.currency}</td>
+                    <td class="live-tl-cell">Hesaplanıyor...</td>
+                    <td><span class="status-badge ${statusClass}" onclick="toggleStatus(${i})">${statusText}</span></td>
+                    <td class="row-actions">
+                        <button class="btn-edit" onclick="editEntry(${i})"><i class="fas fa-pen"></i></button>
+                        <button class="btn-delete" onclick="askDelete(${i})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+            
+            if(filteredEntries.length === 0) html = `<tr><td colspan="7" style="text-align:center; padding:20px;">Kayıt bulunamadı.</td></tr>`;
+
+            els.tableBody.innerHTML = html;
+            document.getElementById('page-info').innerText = `Sayfa ${currentPage} / ${totalPages || 1}`;
+
+            // Tablo çizildiği an ilk hesaplamayı yap
+            updateTableCurrencyCells();
+        }
+
+        function prevPage() { if(currentPage > 1) { currentPage--; renderTable(); } }
+        function nextPage() { 
+            const totalPages = Math.ceil(filteredEntries.length / rowsPerPage);
+            if(currentPage < totalPages) { currentPage++; renderTable(); } 
+        }
+        function filterTable() { currentPage = 1; renderTable(); }
+
+        // --- ISTATISTIKLER & DATALIST ---
+        function updateStats() {
+            els.statTotalJobs.innerText = entries.length;
+            
+            // "Bu Ay En Çok İş" - Adet bazlı
+            const now = new Date();
+            const thisMonth = entries.filter(e => {
+                 const d = new Date(e.date.split('.').reverse().join('-'));
+                 return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+            });
+
+            if(thisMonth.length > 0) {
+                const counts = {};
+                thisMonth.forEach(e => counts[e.firmName] = (counts[e.firmName]||0) + 1);
+                const top = Object.entries(counts).sort((a,b) => b[1]-a[1])[0];
+                els.statTopCount.innerText = `${top[0]} (${top[1]} Adet)`;
+            } else {
+                els.statTopCount.innerText = "-";
+            }
+        }
+
+        function updateDatalists() {
+            const firms = [...new Set(entries.map(e => e.firmName))];
+            const descs = [...new Set(entries.map(e => e.description))];
+            document.getElementById('firmNames').innerHTML = firms.map(f => `<option value="${f}">`).join('');
+            document.getElementById('workDescriptions').innerHTML = descs.map(d => `<option value="${d}">`).join('');
+        }
+
+        // --- CHARTS (Chart.js) ---
+        let perfChart = null;
+        let pieChart = null;
+
+        function updateCharts() {
+            // Veriyi Hazırla (Her şeyi güncel kurla TL yapalım)
+            const firmMap = {};
+            entries.forEach(e => {
+                let val = parseFloat(e.amount) || 0;
+                if(e.currency === 'USD') val *= window.liveRates.USD; 
+                if(e.currency === 'EUR') val *= window.liveRates.EUR;
+                
+                if(!firmMap[e.firmName]) firmMap[e.firmName] = 0;
+                firmMap[e.firmName] += val;
+            });
+
+            const labels = Object.keys(firmMap);
+            const data = Object.values(firmMap);
+            const colors = ['#4361ee', '#3f37c9', '#4cc9f0', '#f72585', '#7209b7'];
+
+            // 1. Bar Chart (Performans)
+            const ctx1 = document.getElementById('firm-performance-chart').getContext('2d');
+            if(perfChart) perfChart.destroy();
+            perfChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Toplam Ciro (TL - Canlı)',
+                        data: data,
+                        backgroundColor: 'rgba(67, 97, 238, 0.7)',
+                        borderColor: '#4361ee',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 2. Pie Chart (Paylar)
+            const ctx2 = document.getElementById('firm-revenue-share-chart').getContext('2d');
+            if(pieChart) pieChart.destroy();
+            pieChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // --- DİĞER FONKSİYONLAR ---
+        function exportToCSV() {
+            let csv = "Tarih,Firma,Aciklama,Tutar,Para Birimi,Program,Durum\n";
+            entries.forEach(e => {
+                csv += `${e.date},"${e.firmName}","${e.description}",${e.amount},${e.currency},"${e.programName}",${e.muhasebeyeVerildi ? 'Faturalandı' : 'Bekliyor'}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "is_takip_data.csv";
+            link.click();
+        }
+
+        function importCSV(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                const lines = text.split('\n').slice(1); // Header atla
+                lines.forEach(line => {
+                    if(line.trim() === '') return;
+                    // Basit CSV parse (virgülle ayrılmış, tırnak temizliği)
+                    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
+                    if(cols.length >= 5) {
+                        entries.push({
+                            date: cols[0].replace(/"/g, ''),
+                            firmName: cols[1].replace(/"/g, ''),
+                            description: cols[2].replace(/"/g, ''),
+                            amount: parseFloat(cols[3]),
+                            currency: cols[4].replace(/"/g, '').trim(),
+                            programName: cols[5]?.replace(/"/g, '') || '',
+                            muhasebeyeVerildi: cols[6]?.includes('Faturalandı') || false,
+                            islem: []
+                        });
+                    }
+                });
+                saveData();
+                showToast("CSV Yüklendi!");
+            };
+            reader.readAsText(file);
+        }
+
+        function verifyPIN() {
+            if(confirm("Tüm verileri silmek istediğinize emin misiniz?")) {
+                const p = prompt("Onaylamak için '1234' yazın:");
+                if(p === '1234') {
+                    entries = [];
+                    saveData();
+                    showToast("Tüm veri temizlendi.");
+                }
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.className = "show";
+            t.innerText = msg;
+            setTimeout(() => { t.className = t.className.replace("show", ""); }, 3000);
+        }
+
+        function closeModal() { document.getElementById('confirm-modal').style.display = 'none'; }
+        window.onclick = function(event) {
+            const m = document.getElementById('confirm-modal');
+            if (event.target == m) m.style.display = "none";
+        }
+
+    </script>
+</body>
+</html>
