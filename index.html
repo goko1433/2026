@@ -206,3 +206,707 @@
                     <input type="checkbox" id="c1" value="Lazer" style="display:none" name="islem"><label for="c1" class="chip-label">Lazer</label>
                     <input type="checkbox" id="c2" value="Büküm" style="display:none" name="islem"><label for="c2" class="chip-label">Büküm</label>
                     <input type="checkbox" id="c3" value="Kaynak" style="display:none" name="islem"><label for="c3" class="chip-label">Kaynak</label>
+                    <input type="checkbox" id="c4" value="Montaj" style="display:none" name="islem"><label for="c4" class="chip-label">Montaj</label>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary" onclick="addData()"><i class="fas fa-save"></i> Kaydet</button>
+                <div class="ml-auto">
+                    <button class="btn btn-success" onclick="exportCSV()"><i class="fas fa-file-excel"></i> Excel</button>
+                    <input type="file" id="imp" style="display:none" onchange="importCSV(this)">
+                    <button class="btn btn-secondary" onclick="document.getElementById('imp').click()"><i class="fas fa-upload"></i> Yükle</button>
+                    <button class="btn btn-danger" onclick="clearData()"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ANALIZ (Fixed Height) -->
+        <div class="card">
+            <div class="card-header"><h3><i class="fas fa-chart-line"></i> Performans & Finans (Stabil)</h3></div>
+            <div class="analysis-grid">
+                <div class="charts-container">
+                    <div class="charts-row">
+                        <div class="chart-wrapper">
+                            <h5 style="text-align:center;color:var(--text-muted);margin:5px 0;">En Çok İş Yapan Firmalar</h5>
+                            <div style="flex:1; min-height:0;"><canvas id="chart-bar"></canvas></div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <h5 style="text-align:center;color:var(--text-muted);margin:5px 0;">Ciro Dağılımı</h5>
+                            <div style="flex:1; min-height:0;"><canvas id="chart-pie"></canvas></div>
+                        </div>
+                    </div>
+                    <!-- Günlük Ciro Akışı Grafiği Kaldırıldı -->
+                </div>
+                <div class="leaderboard">
+                    <div style="text-align:center;font-weight:700;color:var(--text-muted);margin-bottom:10px;">CIRO LİDERLERİ</div>
+                    <div class="leaderboard-list" id="leaderboard-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LISTE -->
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-list"></i> İş Listesi</h3>
+            </div>
+            <div style="padding-bottom:15px; display:flex; gap:10px; flex-wrap:wrap;">
+                <!-- Filtre değişiminde sayfa 1'e dönsün -->
+                <input type="date" id="startDate" onchange="currentPage=1; updateUI()" style="width:140px;">
+                <input type="date" id="endDate" onchange="currentPage=1; updateUI()" style="width:140px;">
+                <!-- Arama yaparken sayfa 1'e dönsün -->
+                <input type="text" id="search" placeholder="Ara..." oninput="currentPage=1; renderTable()" style="flex-grow:1;">
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Firma</th>
+                            <th>Açıklama</th>
+                            <th>Tutar</th>
+                            <th>Canlı (TL)</th>
+                            <th>Termin</th>
+                            <th>Durum</th>
+                            <th style="text-align:right;">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+            <div style="margin-top:15px; display:flex; justify-content:center; gap:10px;">
+                <button class="btn btn-secondary" onclick="changePage(-1)"><i class="fas fa-chevron-left"></i></button>
+                <span id="page-info" style="align-self:center; font-weight:600;">1 / 1</span>
+                <button class="btn btn-secondary" onclick="changePage(1)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </main>
+
+    <div id="sticky-footer">
+        <div style="display:flex; align-items:center; gap:15px;">
+            <i class="fas fa-wallet" style="font-size:2rem; color:#10b981;"></i>
+            <div class="ft-total" id="grand-total-tl">0,00 ₺</div>
+        </div>
+        <div style="display:flex; gap:20px; font-family:'Roboto',monospace;">
+            <div>USD: <b style="color:var(--gold)" id="sum-usd">0</b></div>
+            <div>EUR: <b style="color:var(--primary)" id="sum-eur">0</b></div>
+            <div>TL: <b style="color:var(--text-muted)" id="sum-tl">0</b></div>
+        </div>
+    </div>
+
+    <!-- MÜŞTERİ KARTI MODAL -->
+    <div id="company-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title" style="margin:0"><i class="fas fa-building"></i> Firma Detayı</h3>
+                <button class="btn btn-secondary" onclick="closeModal()" style="padding:5px 10px;">X</button>
+            </div>
+            <div class="modal-body">
+                <div class="crm-grid">
+                    <div>
+                        <div class="input-group">
+                            <label>Yetkili Kişi</label>
+                            <input type="text" id="crm-contact" placeholder="Ad Soyad">
+                        </div>
+                        <div class="input-group">
+                            <label>Telefon</label>
+                            <input type="text" id="crm-phone" placeholder="05XX...">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="input-group">
+                            <label>Adres</label>
+                            <input type="text" id="crm-address" placeholder="Adres">
+                        </div>
+                        <div class="input-group">
+                            <label>Vergi Dairesi / No</label>
+                            <input type="text" id="crm-tax" placeholder="VD / VN">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="crm-stats">
+                    <div class="crm-stat-box">
+                        <h5>TOPLAM CİRO</h5>
+                        <div id="crm-total-rev" style="color:var(--success)">0 ₺</div>
+                    </div>
+                    <div class="crm-stat-box">
+                        <h5>BU YIL</h5>
+                        <div id="crm-year-rev" style="color:var(--primary)">0 ₺</div>
+                    </div>
+                    <div class="crm-stat-box">
+                        <h5>SON İŞ TARİHİ</h5>
+                        <div id="crm-last-date" style="font-size:1rem;">-</div>
+                    </div>
+                    <div class="crm-stat-box">
+                        <h5>DURUM</h5>
+                        <div id="crm-status" style="font-size:0.9rem;">-</div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Özel Notlar (CRM)</label>
+                    <textarea id="crm-notes" rows="3" placeholder="Örn: Ödemeyi geç yapar, Hassas iş ister..." style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px;"></textarea>
+                </div>
+
+                <h4 style="margin-bottom:10px; border-bottom:1px solid var(--border); padding-bottom:5px;">Geçmiş İşler (Son 10)</h4>
+                <div style="max-height:200px; overflow-y:auto;">
+                    <table class="history-table">
+                        <thead><tr><th>Tarih</th><th>Açıklama</th><th>Tutar</th><th>Durum</th></tr></thead>
+                        <tbody id="crm-history-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div style="padding:20px; border-top:1px solid var(--border); text-align:right; background:var(--bg-body);">
+                <button class="btn btn-primary" onclick="saveCompanyDetails()"><i class="fas fa-save"></i> Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        // --- GLOBAL ---
+        let entries = JSON.parse(localStorage.getItem('entries')) || [];
+        let companyDB = JSON.parse(localStorage.getItem('companyDB')) || {}; // CRM DATA
+        let rates = { USD: 30, EUR: 33 };
+        let charts = {};
+        let editingId = null;
+        let currentPage = 1;
+        const perPage = 10;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initWebSocket();
+            setInterval(updateUI, 3000); // 3 saniyede bir ekranı güncelle (Donmayı engeller)
+            updateUI();
+            
+            if(localStorage.getItem('nightMode')==='true') document.body.classList.add('night-mode');
+            document.getElementById('toggle-mode').onclick = () => {
+                document.body.classList.toggle('night-mode');
+                localStorage.setItem('nightMode', document.body.classList.contains('night-mode'));
+                destroyCharts(); updateCharts(); // Temada renk değişimi için
+            };
+            // Modal dışına tıklayınca kapanma
+            document.getElementById('company-modal').addEventListener('click', function(event) {
+                if (event.target === this) {
+                    closeModal();
+                }
+            });
+        });
+
+        // --- WEBSOCKET ---
+        function initWebSocket() {
+            const ws = new WebSocket("wss://stream.binance.com:9443/stream?streams=usdttry@trade/eurusdt@trade");
+            let rawUsd = 0, rawEurUsd = 0;
+            ws.onmessage = e => {
+                const data = JSON.parse(e.data);
+                const p = parseFloat(data.data.p);
+                if(data.stream.includes('usdttry')) { rawUsd = p; rates.USD = p; document.getElementById('live-usd').innerText=p.toFixed(2); }
+                if(data.stream.includes('eurusdt')) rawEurUsd = p;
+                if(rawUsd && rawEurUsd) { rates.EUR = rawUsd * rawEurUsd; document.getElementById('live-eur').innerText=rates.EUR.toFixed(2); }
+            };
+        }
+
+        // --- DATA & LOGIC ---
+        // Güncellenmiş Filtreleme Fonksiyonu
+        function getFiltered() {
+            const sText = document.getElementById('search').value.toLowerCase();
+            const start = document.getElementById('startDate').value ? new Date(document.getElementById('startDate').value) : null;
+            const end = document.getElementById('endDate').value ? new Date(document.getElementById('endDate').value) : null;
+            
+            let dateStartMs = start ? start.setHours(0,0,0,0) : null;
+            let dateEndMs = end ? end.setHours(23,59,59,999) : null;
+
+            return entries.filter(e => {
+                const p = e.date.split('.');
+                // Tarih formatını güvenli bir şekilde parse et
+                const d = new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0]));
+                const dMs = d.getTime();
+
+                const matchSearch = e.firm.toLowerCase().includes(sText) || (e.prog && e.prog.toLowerCase().includes(sText));
+                const matchDate = (!dateStartMs || dMs >= dateStartMs) && (!dateEndMs || dMs <= dateEndMs);
+                
+                return matchSearch && matchDate;
+            });
+        }
+
+        // Ana UI Güncelleme Fonksiyonu
+        function updateUI() {
+            const data = getFiltered();
+            updateStats(data);
+            updateCharts(data);
+            updateTableLive();
+            updateLeaderboard(data);
+            updateDatalists();
+            renderTable(); // Tabloyu da güncelle
+        }
+        
+        // Sadece Tarih Filtreleri Değiştiğinde Çağrılan Fonksiyon
+        function updateAllUI() {
+            currentPage = 1; // Filtre değişince ilk sayfaya dön
+            updateUI();
+        }
+
+        // --- CRM MODAL FUNCTIONS ---
+        let currentModalFirm = null;
+
+        window.openCompanyModal = function(firmName) {
+            currentModalFirm = firmName;
+            document.getElementById('company-modal').classList.add('active');
+            document.getElementById('modal-title').innerHTML = `<i class="fas fa-building"></i> ${firmName}`;
+
+            // Load Saved Data
+            const details = companyDB[firmName] || {};
+            document.getElementById('crm-contact').value = details.contact || '';
+            document.getElementById('crm-phone').value = details.phone || '';
+            document.getElementById('crm-address').value = details.address || '';
+            document.getElementById('crm-tax').value = details.tax || '';
+            document.getElementById('crm-notes').value = details.notes || '';
+
+            // Calculate Stats
+            const firmEntries = entries.filter(e => e.firm === firmName);
+            let totalRev = 0, yearRev = 0;
+            const currentYear = new Date().getFullYear();
+            let lastDate = null;
+
+            // Sort by date desc
+            firmEntries.sort((a,b) => {
+                const pa = a.date.split('.');
+                const pb = b.date.split('.');
+                return new Date(pb[2], pb[1]-1, pb[0]) - new Date(pa[2], pa[1]-1, pa[0]);
+            });
+
+            firmEntries.forEach(e => {
+                let v = e.amt;
+                if(e.curr==='USD') v*=rates.USD; if(e.curr==='EUR') v*=rates.EUR;
+                totalRev += v;
+                if(e.date.includes(currentYear)) yearRev += v;
+            });
+
+            if(firmEntries.length > 0) lastDate = firmEntries[0].date;
+
+            document.getElementById('crm-total-rev').innerText = totalRev.toLocaleString('tr-TR',{maximumFractionDigits:0}) + ' ₺';
+            document.getElementById('crm-year-rev').innerText = yearRev.toLocaleString('tr-TR',{maximumFractionDigits:0}) + ' ₺';
+            document.getElementById('crm-last-date').innerText = lastDate || '-';
+
+            // Status Calculation
+            let statusText = 'Yeni';
+            let statusColor = 'var(--text-muted)';
+            if(lastDate) {
+                const p = lastDate.split('.');
+                const daysDiff = Math.floor((new Date() - new Date(p[2], p[1]-1, p[0])) / (1000*60*60*24));
+                if(daysDiff < 30) { statusText = 'Aktif'; statusColor = 'var(--success)'; }
+                else if(daysDiff < 90) { statusText = 'Durgun'; statusColor = 'var(--warning)'; }
+                else { statusText = `${daysDiff} gün önce`; statusColor = 'var(--danger)'; }
+            }
+            const sEl = document.getElementById('crm-status');
+            sEl.innerText = statusText; sEl.style.color = statusColor; sEl.style.fontWeight = '700';
+
+            // History Table
+            const hBody = document.getElementById('crm-history-body');
+            hBody.innerHTML = firmEntries.slice(0, 10).map(e => `
+                <tr>
+                    <td>${e.date}</td>
+                    <td>${e.prog || e.desc}</td>
+                    <td>${e.amt} ${e.curr}</td>
+                    <td><span style="color:${e.status==='Faturalandı'?'var(--success)':'var(--warning)'}">${e.status}</span></td>
+                </tr>
+            `).join('');
+        };
+
+        window.saveCompanyDetails = function() {
+            if(!currentModalFirm) return;
+            companyDB[currentModalFirm] = {
+                contact: document.getElementById('crm-contact').value,
+                phone: document.getElementById('crm-phone').value,
+                address: document.getElementById('crm-address').value,
+                tax: document.getElementById('crm-tax').value,
+                notes: document.getElementById('crm-notes').value
+            };
+            localStorage.setItem('companyDB', JSON.stringify(companyDB));
+            showToast('Firma bilgileri kaydedildi');
+            closeModal();
+        };
+
+        window.closeModal = function() { document.getElementById('company-modal').classList.remove('active'); };
+
+        // --- STATS & CHARTS ---
+        function updateStats(data) {
+            let sTL=0, sUSD=0, sEUR=0, pending=0;
+            const counts={}, values={};
+            const now = new Date();
+
+            data.forEach(e => {
+                if(e.curr==='TL') sTL+=e.amt; if(e.curr==='USD') sUSD+=e.amt; if(e.curr==='EUR') sEUR+=e.amt;
+                let v = e.amt;
+                if(e.curr==='USD') v*=rates.USD; if(e.curr==='EUR') v*=rates.EUR;
+                
+                counts[e.firm] = (counts[e.firm]||0)+1;
+                values[e.firm] = (values[e.firm]||0)+v;
+                if(e.status==='Bekliyor') pending+=v;
+            });
+
+            document.getElementById('sum-tl').innerText = sTL.toLocaleString('tr-TR');
+            document.getElementById('sum-usd').innerText = sUSD.toLocaleString('en-US');
+            document.getElementById('sum-eur').innerText = sEUR.toLocaleString('de-DE');
+            document.getElementById('grand-total-tl').innerText = (sTL+(sUSD*rates.USD)+(sEUR*rates.EUR)).toLocaleString('tr-TR',{maximumFractionDigits:0}) + ' ₺';
+
+            document.getElementById('stat-total-jobs').innerText = data.length;
+            document.getElementById('stat-pending').innerText = pending.toLocaleString('tr-TR',{maximumFractionDigits:0}) + ' ₺';
+            
+            // Bu ay
+            const thisMonth = data.filter(e => {
+                const p = e.date.split('.');
+                return parseInt(p[1]) === now.getMonth()+1 && parseInt(p[2]) === now.getFullYear();
+            }).length;
+            document.getElementById('stat-month-count').innerText = thisMonth;
+
+            if(Object.keys(values).length > 0) {
+                const top = Object.entries(values).sort((a,b)=>b[1]-a[1])[0];
+                document.getElementById('stat-champ-name').innerText = top[0];
+                document.getElementById('stat-champ-val').innerText = top[1].toLocaleString('tr-TR',{maximumFractionDigits:0}) + ' ₺';
+            }
+        }
+
+        // CHARTS LOGIC (No Destroy - Update Mode)
+        function updateCharts(data) {
+            if(!data) data = getFiltered();
+            const firmData={}, dailyData={};
+            data.forEach(e => {
+                let v = e.amt;
+                if(e.curr==='USD') v*=rates.USD; if(e.curr==='EUR') v*=rates.EUR;
+                firmData[e.firm] = (firmData[e.firm]||0)+v;
+                
+                // Günlük veri toplama (Kaldırıldı)
+                // const iso = e.date.split('.').reverse().join('-');
+                // dailyData[iso] = (dailyData[iso]||0)+v; 
+            });
+
+            // Bar
+            const sortedFirms = Object.entries(firmData).sort((a,b)=>b[1]-a[1]).slice(0, 10); // İlk 10 firmayı al
+            updateChartInstance('chart-bar', 'bar', sortedFirms.map(x=>x[0]), sortedFirms.map(x=>x[1]), getComputedStyle(document.body).getPropertyValue('--primary').trim());
+
+            // Pie
+            let pL=[], pV=[];
+            sortedFirms.slice(0,5).forEach(x=>{pL.push(x[0]); pV.push(x[1]);}); // Pasta grafiği için ilk 5
+            updateChartInstance('chart-pie', 'doughnut', pL, pV, ['#3b82f6','#60a5fa','#93c5fd','#2563eb','#1d4ed8']); // Renkleri tema ile uyumlu yap
+
+            // Line chart kaldırıldı
+        }
+
+        function updateChartInstance(id, type, labels, data, color) {
+            const ctx = document.getElementById(id);
+            // Eğer chart yoksa oluştur, varsa güncelle
+            if(!charts[id]) {
+                charts[id] = new Chart(ctx, {
+                    type: type,
+                    data: { labels: labels, datasets: [{ label:'TL', data: data, backgroundColor: color, borderColor: color, borderRadius:4, tension:0.3, fill: type==='line' }] },
+                    options: { 
+                        responsive:true, maintainAspectRatio:false, 
+                        plugins:{legend:{display:type==='doughnut', position:'bottom'}}, 
+                        scales: type==='doughnut'?{}:{x:{grid:{display:false}}, y:{beginAtZero:true, grid:{color: getComputedStyle(document.body).getPropertyValue('--border').trim()}}}
+                    }
+                });
+            } else {
+                charts[id].data.labels = labels;
+                charts[id].data.datasets[0].data = data;
+                // Animasyonsuz güncelleme (performans için)
+                charts[id].update('none'); 
+            }
+        }
+        function destroyCharts() { for(let k in charts) { charts[k].destroy(); delete charts[k]; } }
+
+        function updateLeaderboard(data) {
+            const firmData={};
+            data.forEach(e=>{
+                let v=e.amt; if(e.curr==='USD') v*=rates.USD; if(e.curr==='EUR') v*=rates.EUR;
+                firmData[e.firm]=(firmData[e.firm]||0)+v;
+            });
+            const sorted = Object.entries(firmData).sort((a,b)=>b[1]-a[1]);
+            document.getElementById('leaderboard-list').innerHTML = sorted.map((item,i)=>`
+                <div class="rank-item ${i===0?'gold':''}">
+                    <div class="rank-num">${i+1}</div>
+                    <div style="flex:1; overflow:hidden;">
+                        <div style="font-weight:700; font-size:0.85rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item[0]}</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted); font-family:'Roboto'">${item[1].toLocaleString('tr-TR',{maximumFractionDigits:0})} ₺</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- TABLE ---
+        function renderTable() {
+            const filtered = getFiltered();
+            const start = (currentPage-1)*perPage;
+            const pageData = filtered.slice(start, start+perPage);
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            
+            document.getElementById('page-info').innerText = `Sayfa ${currentPage} / ${Math.ceil(filtered.length/perPage)||1}`;
+
+            pageData.forEach(e => {
+                // Deadline Check
+                let deadlineHtml = '-';
+                let rowStyle = '';
+                if(e.deadline && e.status==='Bekliyor') {
+                    const p = e.date.split('.'); // Tarih parçalama
+                    const entryDate = new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0]));
+                    const deadlineDate = new Date(e.deadline);
+                    const timeDiff = deadlineDate.getTime() - entryDate.getTime(); // Tarihleri karşılaştır
+                    const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+                    if(daysDiff < 0) { deadlineHtml=`<b style="color:var(--danger)">${Math.abs(daysDiff)} gün geçti!</b>`; rowStyle='background:rgba(239,68,68,0.05)'; }
+                    else if(daysDiff <= 2) { deadlineHtml=`<b style="color:var(--warning)">${daysDiff} gün kaldı</b>`; }
+                    else deadlineHtml=`${daysDiff} gün kaldı`;
+                }
+
+                tbody.innerHTML += `
+                <tr style="${rowStyle}">
+                    <td>${e.date}</td>
+                    <td><span class="firm-link" onclick="openCompanyModal('${e.firm}')">${e.firm}</span><br><small style="color:var(--text-muted)">${e.prog||''}</small></td>
+                    <td>${e.desc}<br><small style="opacity:0.7">${e.material||''}</small></td>
+                    <td><b>${e.amt} ${e.curr}</b></td>
+                    <td class="live-val" data-a="${e.amt}" data-c="${e.curr}">-</td>
+                    <td style="font-size:0.85rem">${deadlineHtml}</td>
+                    <td><span class="status-pill" style="background:${e.status==='Faturalandı'?'rgba(16,185,129,0.1)':'rgba(245,158,11,0.1)'}; color:${e.status==='Faturalandı'?'#059669':'#d97706'}" onclick="toggleStatus(${e.id})">${e.status}</span></td>
+                    <td style="text-align:right">
+                        <button class="btn" style="padding:5px;" onclick="editEntry(${e.id})"><i class="fas fa-pen"></i></button>
+                        <button class="btn" style="padding:5px; color:var(--danger)" onclick="deleteEntry(${e.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+            updateTableLive();
+        }
+
+        function updateTableLive() {
+            document.querySelectorAll('.live-val').forEach(el => {
+                let v = parseFloat(el.dataset.a);
+                if(el.dataset.c==='USD') v*=rates.USD; if(el.dataset.c==='EUR') v*=rates.EUR;
+                el.innerText = v.toLocaleString('tr-TR',{maximumFractionDigits:2}) + ' ₺';
+            });
+        }
+
+        // --- CRUD BASICS ---
+        function addData(n) { // n parametresi artık kullanılmıyor ama kod uyumluluğu için duruyor
+            const firm = document.getElementById('firm-name').value.trim(); // Trim ile boşlukları temizle
+            const amtInput = document.getElementById('amount').value;
+            const amt = parseFloat(amtInput);
+            
+            // Firma ismi ve tutar girilmiş mi kontrol et, NaN kontrolünü de ekle
+            if(!firm || amtInput === '' || isNaN(amt)){ showToast('Eksik veya hatalı firma adı veya tutar'); return; }
+
+            // Tarih formatını garantiye al (GG.AA.YYYY)
+            const today = new Date();
+            const dateFixed = `${String(today.getDate()).padStart(2,'0')}.${String(today.getMonth()+1).padStart(2,'0')}.${today.getFullYear()}`;
+
+            const obj = {
+                id: editingId || Date.now(), 
+                date: dateFixed, // Sabitlenmiş tarih formatı
+                firm, 
+                prog: document.getElementById('program-name').value.trim(), 
+                desc: document.getElementById('description').value.trim(), 
+                material: document.getElementById('material').value.trim(), 
+                amt, 
+                curr: document.getElementById('currency').value, 
+                deadline: document.getElementById('deadline').value, 
+                tasks: [], 
+                status: 'Bekliyor'
+            };
+            
+            document.querySelectorAll('input[name="islem"]:checked').forEach(c => obj.tasks.push(c.value));
+            
+            if(editingId) { // Eğer düzenleme modundaysa
+                entries = entries.map(e => e.id === editingId ? obj : e);
+            } else { // Yeni kayıt ise
+                entries.unshift(obj); // En başa ekle
+            }
+            
+            save(); 
+            editingId = null; // Düzenleme modunu sıfırla
+            clearForm(); // Formu temizle
+            renderTable(); // Tabloyu güncelle
+            updateUI(); // İstatistikleri de güncelle
+        }
+
+        function clearForm() { 
+            document.getElementById('firm-name').value = '';
+            document.getElementById('program-name').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('material').value = '';
+            document.getElementById('amount').value = '';
+            document.getElementById('currency').value = 'TL';
+            document.getElementById('deadline').value = '';
+            document.querySelectorAll('input[name="islem"]:checked').forEach(c => c.checked = false);
+            editingId = null; // Form temizlenirken editingId de sıfırlanmalı
+        }
+
+        function save() { localStorage.setItem('entries', JSON.stringify(entries)); }
+        
+        function deleteEntry(id) { 
+            if(confirm('Bu kaydı silmek istediğinizden emin misiniz?')) { 
+                entries = entries.filter(e => e.id !== id); 
+                save(); 
+                renderTable(); 
+                updateUI(); // İstatistikleri de güncelle
+            } 
+        }
+        
+        function editEntry(id) { 
+            const e = entries.find(x => x.id === id);
+            if (!e) return; // Bulunamayan ID için hata önlemi
+            
+            editingId = id; // Düzenlenecek ID'yi sakla
+            document.getElementById('firm-name').value = e.firm;
+            document.getElementById('program-name').value = e.prog || '';
+            document.getElementById('description').value = e.desc || '';
+            document.getElementById('material').value = e.material || '';
+            document.getElementById('amount').value = e.amt;
+            document.getElementById('currency').value = e.curr;
+            document.getElementById('deadline').value = e.deadline || '';
+            
+            // İşlemleri (checkboxları) ayarla
+            document.querySelectorAll('input[name="islem"]').forEach(cb => {
+                cb.checked = e.tasks && e.tasks.includes(cb.value);
+            });
+            
+            // Sayfayı en üste kaydır
+            window.scrollTo({top: 0, behavior: 'smooth'}); 
+        }
+
+        function toggleStatus(id) { 
+            const e = entries.find(x => x.id === id);
+            if (e) {
+                e.status = e.status === 'Bekliyor' ? 'Faturalandı' : 'Bekliyor';
+                save(); 
+                renderTable(); 
+            }
+        }
+        
+        function changePage(d) { 
+            currentPage += d; 
+            if (currentPage < 1) currentPage = 1; 
+            // Eğer son sayfadaysanız ve silme işlemi yaptıysanız bir önceki sayfaya dönmek gerekebilir
+            const totalPages = Math.ceil(getFiltered().length / perPage) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            renderTable(); 
+        }
+        
+        function updateDatalists() {
+            const firms = [...new Set(entries.map(e => e.firm))].sort(); // Firmaları alfabeye göre sırala
+            document.getElementById('firmList').innerHTML = firms.map(x => `<option value="${x}">`).join('');
+        }
+        
+        function importCSV(inputElement) {
+            const file = inputElement.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                const lines = e.target.result.split('\n');
+                let importedCount = 0;
+                // İlk satırı başlık olarak atla
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue; // Boş satırları atla
+
+                    // Basit CSV parse etme - Tırnaklı alanları daha iyi yönetmek için daha karmaşık regex gerekebilir
+                    // Bu basit regex, virgül ile ayrılmış alanları alır. Tırnak içindeki virgülleri tam ayıramaz.
+                    const values = line.split(','); 
+                    
+                    // En az beklenen alan sayısı kontrolü (ID, Tarih, Firma, Tutar, Para Birimi, Durum)
+                    if (values.length >= 7) {
+                        const dateParts = values[1].split('.'); // GG.AA.YYYY bekliyoruz
+                        if(dateParts.length === 3 && !isNaN(dateParts[0]) && !isNaN(dateParts[1]) && !isNaN(dateParts[2])) {
+                            const entry = {
+                                id: Date.now() + Math.random(), // Yeni ID ver
+                                date: `${String(dateParts[0]).padStart(2,'0')}.${String(dateParts[1]).padStart(2,'0')}.${dateParts[2]}`, // Formatı düzelt
+                                firm: values[2].replace(/"/g, '').trim(),
+                                prog: values[3] ? values[3].replace(/"/g, '').trim() : '',
+                                desc: values[4] ? values[4].replace(/"/g, '').trim() : '',
+                                amt: parseFloat(values[5]),
+                                curr: values[6].trim(),
+                                status: values[7] ? values[7].replace(/"/g, '').trim() : 'Bekliyor',
+                                tasks: [], // Import edilen CSV'de task bilgisi yok varsayılıyor
+                                material: '' // Import edilen CSV'de malzeme bilgisi yok varsayılıyor
+                            };
+                            // Tutar geçerli mi kontrol et
+                            if (!isNaN(entry.amt)) {
+                                entries.push(entry);
+                                importedCount++;
+                            } else {
+                                console.warn('CSV Import Hata: Geçersiz tutar', line);
+                            }
+                        } else {
+                            console.warn('CSV Import Hata: Geçersiz tarih formatı', line);
+                        }
+                    } else {
+                        console.warn('CSV Import Hata: Yetersiz alan sayısı', line);
+                    }
+                }
+                save();
+                updateUI(); // Tüm UI'yi güncelle
+                showToast(`${importedCount} kayıt başarıyla yüklendi.`);
+            };
+            reader.onerror = () => {
+                showToast('Dosya okuma hatası!');
+            };
+            reader.readAsText(file);
+        }
+        
+        function exportCSV() {
+            const dataToExport = getFiltered(); // Sadece filtrelenen verileri export et
+            if (dataToExport.length === 0) {
+                showToast('Export edilecek veri bulunamadı.');
+                return;
+            }
+            
+            const csvRows = [];
+            // Başlık satırı
+            csvRows.push("ID,Tarih,Firma,Program,Aciklama,Tutar,PB,Durum");
+            
+            for (const row of dataToExport) {
+                const values = [
+                    row.id,
+                    row.date,
+                    `"${row.firm.replace(/"/g, '""')}"`, // Tırnak içindeki tırnakları ikiye katla
+                    `"${row.prog ? row.prog.replace(/"/g, '""') : ''}"`,
+                    `"${row.desc ? row.desc.replace(/"/g, '""') : ''}"`,
+                    row.amt,
+                    row.curr,
+                    row.status
+                ];
+                csvRows.push(values.join(','));
+            }
+            
+            const csvString = csvRows.join('\n');
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'is_listesi_export.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('Export tamamlandı.');
+        }
+        
+        function clearData() { 
+            if(prompt('Tüm verileri temizlemek için lütfen şifreyi girin (1234):') === '1234') { 
+                entries = []; 
+                localStorage.clear(); // Hem entries hem de companyDB'yi temizle
+                save(); // localStorage'a boş diziyi kaydet
+                updateUI(); // UI'yi sıfırla
+                alert('Tüm veriler temizlendi.'); 
+                showToast('Tüm veriler temizlendi.');
+            } else {
+                alert('Yanlış şifre.');
+            }
+        }
+        
+        function showToast(m) { 
+            const t=document.getElementById('toast'); 
+            t.innerText=m; 
+            t.classList.add('show'); 
+            setTimeout(()=>t.classList.remove('show'),3000); 
+        }
+    </script>
+</body>
+</html>
