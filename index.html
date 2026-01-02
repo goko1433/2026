@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>İSTANBUL TEKNİK LAZER | ERP v5.0</title>
+    <title>İSTANBUL TEKNİK LAZER | ERP v6.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -21,9 +21,10 @@
             --warning: #f59e0b;
             --danger: #ef4444;
             --gold: #fbbf24;
+            --silver: #94a3b8;
+            --bronze: #b45309;
             --radius: 12px;
             --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
         }
 
         body.night-mode {
@@ -41,6 +42,7 @@
             margin: 0;
             padding-bottom: 140px;
             transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
         }
 
         /* HEADER */
@@ -65,7 +67,7 @@
         }
         .header-actions button:hover { background: var(--bg-body); color: var(--primary); }
 
-        /* LAYOUT */
+        /* MAIN & CARD */
         main { max-width: 1600px; margin: 30px auto; padding: 0 30px; display: flex; flex-direction: column; gap: 25px; }
 
         .card {
@@ -79,7 +81,7 @@
         .card-header h3 { margin: 0; font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
 
         /* DASHBOARD GRID */
-        .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; } /* 4 Kolon oldu */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
         
         .stat-card {
             background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
@@ -91,15 +93,12 @@
         .stat-icon { position: absolute; right: 20px; bottom: 20px; font-size: 3rem; opacity: 0.05; color: var(--text-main); }
         .stat-sub { font-size: 0.8rem; margin-top: 5px; color: var(--success); font-weight: 500; }
 
-        /* Champion Style */
         .stat-card.champion { background: linear-gradient(135deg, var(--bg-card), rgba(251, 191, 36, 0.1)); border-color: rgba(251, 191, 36, 0.5); }
         .stat-card.champion::before { background: var(--gold); }
-        
-        /* Pending Style */
         .stat-card.pending::before { background: var(--danger); }
         .stat-card.pending .stat-sub { color: var(--danger); }
 
-        /* FORM ELEMENTS */
+        /* FORMS */
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px; }
         .input-group { margin-bottom: 20px; }
@@ -110,7 +109,6 @@
         }
         input:focus, select:focus { border-color: var(--primary); background: var(--bg-card); }
 
-        /* Date Presets */
         .date-presets { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
         .preset-btn {
             padding: 6px 12px; background: var(--bg-body); border: 1px solid var(--border); border-radius: 20px;
@@ -137,28 +135,54 @@
         .form-actions { display: flex; gap: 10px; margin-top: 25px; }
         .ml-auto { margin-left: auto; display: flex; gap: 10px; }
 
-        /* ANALYSIS SECTION */
-        .analysis-grid { display: grid; grid-template-columns: 3fr 1fr; gap: 25px; }
-        .charts-column { display: flex; flex-direction: column; gap: 25px; }
-        .charts-row { display: flex; gap: 25px; height: 320px; }
+        /* ANALYSIS */
+        .analysis-grid { display: grid; grid-template-columns: 3fr 1fr; gap: 25px; height: 500px; }
+        .charts-column { display: flex; flex-direction: column; gap: 25px; height: 100%; }
+        .charts-row { display: flex; gap: 25px; height: 50%; }
         .chart-box { flex: 1; height: 100%; position: relative; }
-        
+        .chart-box-full { height: 50%; width: 100%; position: relative; }
+
+        /* LEADERBOARD (Full List) */
         .leaderboard { 
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; height: 100%;
-            display: flex; flex-direction: column; overflow: hidden;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); 
+            padding: 20px; height: 100%; display: flex; flex-direction: column; overflow: hidden;
+            box-sizing: border-box;
         }
-        .leaderboard-list { flex: 1; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding-right: 5px; }
-        .rank-item {
-            display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px;
-            background: var(--bg-body); border: 1px solid var(--border);
+        .leaderboard-title {
+            text-align: center; font-weight: 700; color: var(--text-muted); margin-bottom: 15px; 
+            text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;
         }
-        .rank-item.gold { border-color: var(--gold); background: rgba(251, 191, 36, 0.1); }
-        .rank-num {
-            width: 28px; height: 28px; border-radius: 50%; background: var(--border); color: var(--text-muted);
-            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;
+        .leaderboard-list { 
+            flex: 1; display: flex; flex-direction: column; gap: 8px; 
+            overflow-y: auto; /* SCROLL EKLENDİ */
+            padding-right: 5px;
         }
-        .rank-item.gold .rank-num { background: var(--gold); color: #fff; }
         
+        /* Scrollbar Styling */
+        .leaderboard-list::-webkit-scrollbar { width: 6px; }
+        .leaderboard-list::-webkit-scrollbar-track { background: var(--bg-body); border-radius: 10px; }
+        .leaderboard-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+        .rank-item {
+            display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px;
+            background: var(--bg-body); border: 1px solid var(--border); transition: 0.2s;
+        }
+        .rank-num {
+            min-width: 26px; height: 26px; border-radius: 50%; background: var(--border); color: var(--text-muted);
+            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem;
+        }
+        .rank-info { flex: 1; overflow: hidden; }
+        .rank-name { font-weight: 700; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .rank-val { font-size: 0.8rem; color: var(--text-muted); font-family: 'Roboto', monospace; }
+
+        /* Special Ranks */
+        .rank-item.gold { border-color: var(--gold); background: rgba(251, 191, 36, 0.1); }
+        .rank-item.gold .rank-num { background: var(--gold); color: #fff; }
+        .rank-item.silver { border-color: var(--silver); background: rgba(148, 163, 184, 0.1); }
+        .rank-item.silver .rank-num { background: var(--silver); color: #fff; }
+        .rank-item.bronze { border-color: var(--bronze); background: rgba(180, 83, 9, 0.1); }
+        .rank-item.bronze .rank-num { background: var(--bronze); color: #fff; }
+
         /* TABLE */
         .table-responsive { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
         table { width: 100%; border-collapse: collapse; min-width: 1200px; }
@@ -179,19 +203,21 @@
         }
         .footer-total-main { font-size: 2.2rem; font-weight: 800; color: var(--success); font-family: 'Roboto', monospace; }
         .footer-right { display: flex; gap: 20px; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 12px; }
+        
+        .mini-stat { display: flex; flex-direction: column; align-items: flex-end; }
+        .mini-stat span { font-size: 0.7rem; opacity: 0.6; font-weight: 600; }
+        .mini-stat strong { font-family: 'Roboto', monospace; font-size: 1.1rem; }
 
-        /* PRINT MODE */
         @media print {
             body { padding: 0; background: white; color: black; }
-            header, #sticky-footer, .form-actions, .card-header input, .card-header .btn-icon, .filter-bar, #bulk-actions, .pagination, .btn-icon, input[type="checkbox"] { display: none !important; }
+            header, #sticky-footer, .form-actions, .card-header input, .card-header .btn-icon, .date-presets, .pagination, .btn-icon, input[type="checkbox"], .analysis-grid { display: none !important; }
             .card { box-shadow: none; border: none; padding: 0; margin: 20px 0; page-break-inside: avoid; }
             main { padding: 0; margin: 0; max-width: 100%; }
             table { width: 100%; border: 1px solid #ccc; }
             th, td { border: 1px solid #ccc; padding: 8px; font-size: 10pt; }
-            .status-pill { background: none; color: black; border: 1px solid black; }
         }
 
-        @media (max-width: 1200px) { .analysis-grid { grid-template-columns: 1fr; } .charts-row { flex-direction: column; height: auto; } .chart-box { height: 300px; } .leaderboard { height: 400px; } .dashboard-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 1200px) { .analysis-grid { grid-template-columns: 1fr; height: auto; } .charts-column { height: auto; } .charts-row { flex-direction: column; height: auto; } .chart-box, .chart-box-full { height: 300px; } .leaderboard { height: 500px; } .dashboard-grid { grid-template-columns: 1fr 1fr; } }
         @media (max-width: 768px) { .dashboard-grid, .row, .row-3 { grid-template-columns: 1fr; } #sticky-footer { flex-direction: column; width: 85%; bottom: 10px; } .footer-right { width: 100%; justify-content: space-between; } }
     </style>
 </head>
@@ -219,7 +245,6 @@
                     <p id="stat-total-jobs">0</p>
                     <i class="fas fa-folder-open stat-icon"></i>
                 </div>
-                <!-- YENİ: Tahsilat Bekleyen -->
                 <div class="stat-card pending">
                     <h4>Tahsilat Bekleyen</h4>
                     <p id="stat-pending-amount">0 ₺</p>
@@ -268,9 +293,7 @@
                 <div class="input-group">
                     <label>Malzeme (Opsiyonel)</label>
                     <input type="text" id="material" placeholder="Örn: 2mm DKP" list="matList">
-                    <datalist id="matList">
-                        <option value="DKP Sac"></option><option value="Paslanmaz"></option><option value="Alüminyum"></option>
-                    </datalist>
+                    <datalist id="matList"><option value="DKP Sac"><option value="Paslanmaz"><option value="Alüminyum"></datalist>
                 </div>
             </div>
             <div class="row-3">
@@ -317,7 +340,7 @@
                 <div class="charts-column">
                     <div class="charts-row">
                         <div class="chart-box">
-                            <h5 style="text-align:center;color:var(--text-muted);margin-bottom:5px;">Firma Ciro Sıralaması</h5>
+                            <h5 style="text-align:center;color:var(--text-muted);margin-bottom:5px;">En Çok İş Yapılan 10 Firma</h5>
                             <canvas id="chart-bar"></canvas>
                         </div>
                         <div class="chart-box">
@@ -325,14 +348,16 @@
                             <canvas id="chart-pie"></canvas>
                         </div>
                     </div>
-                    <div class="chart-box" style="height:250px;">
-                        <h5 style="text-align:center;color:var(--text-muted);margin-bottom:5px;">Günlük İş Akışı</h5>
+                    <div class="chart-box-full">
+                        <h5 style="text-align:center;color:var(--text-muted);margin-bottom:5px;">Günlük Toplam Ciro Grafiği</h5>
                         <canvas id="chart-line"></canvas>
                     </div>
                 </div>
                 <div class="leaderboard">
-                    <div style="text-align:center;margin-bottom:15px;color:var(--gold);font-size:1.5rem;"><i class="fas fa-crown"></i></div>
-                    <div class="leaderboard-list" id="leaderboard-list"></div>
+                    <div class="leaderboard-title"><i class="fas fa-list-ol"></i> Ciro Sıralaması (TÜMÜ)</div>
+                    <div class="leaderboard-list" id="leaderboard-list">
+                        <!-- JS ile dolacak -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -390,7 +415,6 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <div id="sticky-footer">
         <div class="footer-left">
             <i class="fas fa-wallet" style="font-size:2.5rem; color:#10b981;"></i>
@@ -409,26 +433,24 @@
     <script>
         // --- GLOBAL ---
         let entries = JSON.parse(localStorage.getItem('entries')) || [];
-        let rates = { USD: 30.00, EUR: 33.00 }; // WebSocket updates this
+        let rates = { USD: 30.00, EUR: 33.00 }; 
         let currentPage = 1;
         const perPage = 10;
         let editingId = null;
         let selectedIds = new Set();
-        let charts = {}; // Store chart instances
+        let charts = {}; 
 
         // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             initWebSocket();
-            // Start UI Loop (Throttled update)
             setInterval(updateAllUI, 3000); 
-            // Initial render
             setDateRange('all');
             
             if(localStorage.getItem('nightMode') === 'true') document.body.classList.add('night-mode');
             document.getElementById('toggle-mode').onclick = () => {
                 document.body.classList.toggle('night-mode');
                 localStorage.setItem('nightMode', document.body.classList.contains('night-mode'));
-                updateCharts(true); // Force redraw
+                updateCharts(true); 
             };
         });
 
@@ -473,12 +495,11 @@
             });
         }
 
-        // This function is called every 3 seconds to update UI smoothly without flickering
         function updateAllUI() {
             const data = getFilteredData();
             updateFooterAndDashboard(data);
-            updateTableLiveValues(); // Only update numbers in table
-            updateCharts(false); // Update chart data without destroy
+            updateTableLiveValues(); 
+            updateCharts(false); 
             updateLeaderboard(data);
             updateDatalists();
         }
@@ -508,7 +529,7 @@
             
             save(); editingId = null;
             if(!andNew) clearForm();
-            renderTable(); // Re-render table structure immediately on add
+            renderTable(); 
         }
 
         function clearForm() {
@@ -535,32 +556,26 @@
             const counts = {}, values = {};
 
             data.forEach(e => {
-                // Totals
                 if(e.curr==='TL') sTL+=e.amt;
                 if(e.curr==='USD') sUSD+=e.amt;
                 if(e.curr==='EUR') sEUR+=e.amt;
 
-                // Converted Value
                 let v = e.amt;
                 if(e.curr==='USD') v*=rates.USD;
                 if(e.curr==='EUR') v*=rates.EUR;
 
-                // Stats
                 counts[e.firm] = (counts[e.firm]||0)+1;
                 values[e.firm] = (values[e.firm]||0)+v;
 
-                // Pending
                 if(e.status === 'Bekliyor') pendingTL += v;
             });
 
-            // Footer
             document.getElementById('sum-tl').innerText='₺'+sTL.toLocaleString('tr-TR');
             document.getElementById('sum-usd').innerText='$'+sUSD.toLocaleString('en-US');
             document.getElementById('sum-eur').innerText='€'+sEUR.toLocaleString('de-DE');
             const total = sTL + (sUSD*rates.USD) + (sEUR*rates.EUR);
             document.getElementById('grand-total-tl').innerText = total.toLocaleString('tr-TR',{minimumFractionDigits:2}) + ' ₺';
 
-            // Dashboard
             document.getElementById('stat-total-jobs').innerText = data.length;
             document.getElementById('stat-pending-amount').innerText = pendingTL.toLocaleString('tr-TR',{maximumFractionDigits:0}) + ' ₺';
             
@@ -580,8 +595,13 @@
             data.forEach(e => {
                 let v = e.amt;
                 if(e.curr==='USD') v*=rates.USD; if(e.curr==='EUR') v*=rates.EUR;
+                
+                // Firm Totals
                 firmData[e.firm] = (firmData[e.firm]||0)+v;
-                const iso = e.date.split('.').reverse().join('-');
+                
+                // Daily Totals (DD.MM.YYYY formatından ISO YYYY-MM-DD'ye çevirip topla)
+                const p = e.date.split('.'); 
+                const iso = `${p[2]}-${p[1]}-${p[0]}`; 
                 dailyData[iso] = (dailyData[iso]||0)+v;
             });
 
@@ -595,40 +615,42 @@
             sortedFirms.slice(0,5).forEach(x=>{pLabels.push(x[0]); pVals.push(x[1]);});
             if(sortedFirms.length>5) { pLabels.push('Diğerleri'); pVals.push(sortedFirms.slice(5).reduce((a,c)=>a+c[1],0)); }
 
-            // Line Data
-            const sortedDates = Object.keys(dailyData).sort();
-            const lineLabels = sortedDates.map(d=>{const p=d.split('-'); return `${p[2]}.${p[1]}`});
-            const lineValues = sortedDates.map(d=>dailyData[d]);
+            // Line Data (Kronolojik Sıralama)
+            const sortedDates = Object.keys(dailyData).sort(); // Tarihe göre sırala
+            const lineLabels = sortedDates.map(d => {
+                const p = d.split('-');
+                return `${p[2]}.${p[1]}`; // DD.MM formatına çevir
+            });
+            const lineValues = sortedDates.map(d => dailyData[d]);
 
             const isDark = document.body.classList.contains('night-mode');
             const color = isDark ? '#94a3b8' : '#64748b';
             const grid = isDark ? '#334155' : '#e2e8f0';
 
-            // Function to create or update chart
-            const updateChart = (id, type, labels, datasetData, colors, bg) => {
+            const updateChart = (id, type, labels, datasetData, colors, bg, isLine) => {
                 if (charts[id] && !forceRedraw) {
                     charts[id].data.labels = labels;
                     charts[id].data.datasets[0].data = datasetData;
-                    charts[id].update('none'); // Silent update
+                    charts[id].update('none'); 
                 } else {
                     if(charts[id]) charts[id].destroy();
                     charts[id] = new Chart(document.getElementById(id), {
                         type: type,
                         data: { 
                             labels: labels, 
-                            datasets: [{ label:'TL', data: datasetData, backgroundColor: bg, borderColor: bg, borderRadius:4, fill: type==='line', tension:0.4 }] 
+                            datasets: [{ label:'TL', data: datasetData, backgroundColor: bg, borderColor: bg, borderRadius:4, fill: isLine, tension:0.3 }] 
                         },
                         options: { 
                             responsive:true, maintainAspectRatio:false, plugins:{legend:{display:type==='doughnut', position:'bottom', labels:{color}}}, 
-                            scales: type==='doughnut'?{}:{x:{ticks:{color},grid:{display:false}}, y:{ticks:{color},grid:{color:grid}}}
+                            scales: type==='doughnut'?{}:{x:{ticks:{color},grid:{display:false}}, y:{ticks:{color},grid:{color:grid}, beginAtZero:true}}
                         }
                     });
                 }
             };
 
-            updateChart('chart-bar', 'bar', barLabels, barValues, [], '#2563eb');
-            updateChart('chart-pie', 'doughnut', pLabels, pVals, [], ['#2563eb','#3b82f6','#60a5fa','#93c5fd','#10b981','#f59e0b']);
-            updateChart('chart-line', 'line', lineLabels, lineValues, [], '#10b981');
+            updateChart('chart-bar', 'bar', barLabels, barValues, [], '#2563eb', false);
+            updateChart('chart-pie', 'doughnut', pLabels, pVals, [], ['#2563eb','#3b82f6','#60a5fa','#93c5fd','#10b981','#f59e0b'], false);
+            updateChart('chart-line', 'line', lineLabels, lineValues, [], '#10b981', true);
         }
 
         function updateLeaderboard(data) {
@@ -638,20 +660,20 @@
                 if(e.curr==='USD') v*=rates.USD; if(e.curr==='EUR') v*=rates.EUR;
                 firmData[e.firm] = (firmData[e.firm]||0)+v;
             });
-            const sorted = Object.entries(firmData).sort((a,b)=>b[1]-a[1]).slice(0,5);
+            // TÜM FİRMALARI SIRALA (Limit yok)
+            const sorted = Object.entries(firmData).sort((a,b)=>b[1]-a[1]);
             const container = document.getElementById('leaderboard-list');
             
-            // Rebuild only if length changed to prevent flickering, otherwise just update text
-            // Simple approach: Rebuild string is fast enough for 5 items.
             container.innerHTML = sorted.map((item, i) => `
-                <div class="rank-item ${i===0?'gold':''}">
+                <div class="rank-item ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">
                     <div class="rank-num">${i+1}</div>
-                    <div style="flex:1">
-                        <div style="font-weight:700;font-size:0.9rem">${item[0]}</div>
-                        <div style="font-size:0.8rem;color:var(--text-muted);font-family:'Roboto'">${item[1].toLocaleString('tr-TR',{maximumFractionDigits:0})} ₺</div>
+                    <div style="flex:1; overflow:hidden;">
+                        <div class="rank-name" title="${item[0]}">${item[0]}</div>
+                        <div class="rank-val">${item[1].toLocaleString('tr-TR',{maximumFractionDigits:0})} ₺</div>
                     </div>
                 </div>
             `).join('');
+            if(sorted.length===0) container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">Veri yok</div>';
         }
 
         function renderTable() {
@@ -674,6 +696,8 @@
                     const diff = Math.ceil((new Date(e.deadline) - today) / (86400000));
                     if(diff < 0) deadlineHtml = `<span style="color:var(--danger)">${Math.abs(diff)} gün geçti</span>`;
                     else deadlineHtml = `${diff} gün kaldı`;
+                } else if(e.deadline) {
+                    const p = e.deadline.split('-'); deadlineHtml = `${p[2]}.${p[1]}`;
                 }
 
                 const tr = document.createElement('tr');
@@ -709,16 +733,14 @@
             const today = new Date();
             let start = new Date();
             let end = new Date();
-            
             document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
 
-            if (type === 'today') {
-                // start & end is already today
-            } else if (type === 'week') {
-                const day = today.getDay() || 7; // Get current day number, converting Sun. to 7
-                if(day !== 1) start.setHours(-24 * (day - 1)); // Go back to Monday
-                end.setHours(24 * (7 - day)); // Go forward to Sunday
+            if (type === 'today') { /* defaults */ } 
+            else if (type === 'week') {
+                const day = today.getDay() || 7; 
+                start.setHours(-24 * (day - 1)); 
+                end.setHours(24 * (7 - day)); 
             } else if (type === 'month') {
                 start = new Date(today.getFullYear(), today.getMonth(), 1);
                 end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
@@ -730,8 +752,6 @@
                 document.getElementById('endDate').value = '';
                 renderTable(); updateAllUI(); return;
             }
-
-            // Format to YYYY-MM-DD for input
             const fmt = d => d.toISOString().split('T')[0];
             document.getElementById('startDate').value = fmt(start);
             document.getElementById('endDate').value = fmt(end);
