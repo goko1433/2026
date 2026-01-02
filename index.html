@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>İSTANBUL TEKNİK LAZER | ERP Sistemi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <title>İSTANBUL TEKNİK LAZER | ERP v4.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -12,7 +12,6 @@
         :root {
             --primary: #2563eb;
             --primary-dark: #1e40af;
-            --secondary: #64748b;
             --bg-body: #f8fafc;
             --bg-card: #ffffff;
             --text-main: #0f172a;
@@ -21,11 +20,12 @@
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
-            --info: #3b82f6;
-            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --gold: #fbbf24;
+            --silver: #94a3b8;
+            --bronze: #b45309;
             --radius: 12px;
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
         }
 
         body.night-mode {
@@ -34,7 +34,6 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border: #334155;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
         }
 
         body {
@@ -44,14 +43,13 @@
             margin: 0;
             padding-bottom: 140px;
             transition: background-color 0.3s, color 0.3s;
-            overflow-x: hidden;
         }
 
         /* --- ANIMATIONS --- */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes glowGold { 0% { box-shadow: 0 0 5px var(--gold); transform: scale(1); } 50% { box-shadow: 0 0 20px var(--gold); transform: scale(1.02); } 100% { box-shadow: 0 0 5px var(--gold); transform: scale(1); } }
+        @keyframes pulseRed { 0% { background-color: rgba(239, 68, 68, 0.1); } 50% { background-color: rgba(239, 68, 68, 0.25); } 100% { background-color: rgba(239, 68, 68, 0.1); } }
+        
         .animate-in { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.2s; }
@@ -59,135 +57,70 @@
 
         /* --- HEADER --- */
         header {
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-            padding: 0 40px;
-            height: 70px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow-sm);
+            background: var(--bg-card); border-bottom: 1px solid var(--border);
+            padding: 0 40px; height: 70px; display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100;
         }
-
         #logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-            text-transform: uppercase;
+            font-size: 1.4rem; font-weight: 900; display: flex; align-items: center; gap: 12px;
+            color: var(--primary); letter-spacing: -0.5px; text-transform: uppercase;
         }
-
         .live-ticker {
-            display: flex;
-            gap: 20px;
-            background: var(--bg-body);
-            padding: 8px 20px;
-            border-radius: 99px;
-            border: 1px solid var(--border);
-            font-variant-numeric: tabular-nums;
+            display: flex; gap: 20px; background: var(--bg-body); padding: 8px 20px;
+            border-radius: 99px; border: 1px solid var(--border); font-variant-numeric: tabular-nums;
         }
-        .ticker-item { font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        
         .header-actions button {
             width: 40px; height: 40px; border-radius: 8px; border: 1px solid var(--border);
             background: var(--bg-card); color: var(--text-muted); cursor: pointer; transition: 0.2s;
-            font-size: 1.1rem;
         }
-        .header-actions button:hover { background: var(--bg-body); color: var(--primary); transform: scale(1.05); }
+        .header-actions button:hover { background: var(--bg-body); color: var(--primary); }
 
         /* --- LAYOUT --- */
-        main {
-            max-width: 1600px;
-            margin: 30px auto;
-            padding: 0 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
+        main { max-width: 1600px; margin: 30px auto; padding: 0 30px; display: flex; flex-direction: column; gap: 25px; }
 
         .card {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            padding: 30px;
-            box-shadow: var(--shadow-sm);
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border);
+            padding: 30px; box-shadow: var(--shadow-sm);
         }
-        .card:hover { box-shadow: var(--shadow-md); }
-
         .card-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border);
         }
-        .card-header h3 { margin: 0; font-size: 1.25rem; display: flex; align-items: center; gap: 10px; font-weight: 700; }
+        .card-header h3 { margin: 0; font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
 
-        /* --- DASHBOARD STATS --- */
+        /* --- DASHBOARD --- */
         .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
-        
         .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border); border-radius: var(--radius); padding: 25px; position: relative;
-            overflow: hidden;
-            display: flex; flex-direction: column; justify-content: center;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 25px; position: relative; overflow: hidden;
         }
-        .stat-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--primary);
-        }
-        .stat-card.champion::before { background: linear-gradient(to bottom, #f59e0b, #d97706); }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary); }
+        .stat-card h4 { margin: 0 0 10px 0; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; font-weight: 600; }
+        .stat-card p { margin: 0; font-size: 2.2rem; font-weight: 800; color: var(--text-main); }
+        .stat-icon { position: absolute; right: 20px; bottom: 20px; font-size: 4rem; opacity: 0.03; color: var(--text-main); }
 
-        .stat-card h4 { margin: 0 0 10px 0; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-        .stat-card p { margin: 0; font-size: 2.2rem; font-weight: 800; color: var(--text-main); letter-spacing: -1px; }
-        .stat-icon { position: absolute; right: 20px; bottom: 20px; font-size: 4rem; opacity: 0.03; color: var(--text-main); transform: rotate(-10deg); }
-        .stat-sub { font-size: 0.85rem; margin-top: 5px; color: var(--success); font-weight: 500; }
-
-        /* Champion Card Special Style */
-        .champion-content { display: flex; align-items: center; gap: 15px; }
-        .champion-icon { 
-            font-size: 2rem; color: #f59e0b; background: rgba(245, 158, 11, 0.1); 
-            width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        }
-
-        /* --- FORMS & FILTERS --- */
-        .filter-bar {
-            display: flex; gap: 15px; background: var(--bg-body); padding: 15px; border-radius: var(--radius);
-            border: 1px solid var(--border); align-items: center; flex-wrap: wrap;
-        }
-        .date-input-group { display: flex; align-items: center; gap: 10px; }
-        .date-input-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
-
+        /* --- FORMS --- */
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .row-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        .row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px; }
         .input-group { margin-bottom: 20px; }
-        
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); }
         input, select {
-            width: 100%; padding: 12px 16px; border: 1px solid var(--border);
-            border-radius: 8px; background: var(--bg-body); color: var(--text-main);
-            font-size: 0.95rem; outline: none; box-sizing: border-box; transition: 0.2s;
+            width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px;
+            background: var(--bg-body); color: var(--text-main); font-size: 0.95rem; outline: none; box-sizing: border-box;
         }
-        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); background: var(--bg-card); }
+        input:focus, select:focus { border-color: var(--primary); background: var(--bg-card); }
 
-        /* CHIPS */
-        .chip-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+        /* Chips */
+        .chip-container { display: flex; gap: 10px; flex-wrap: wrap; }
         .chip-checkbox { display: none; }
         .chip-label {
-            padding: 8px 16px; background: var(--bg-body); border: 1px solid var(--border);
-            border-radius: 50px; cursor: pointer; font-weight: 500; color: var(--text-muted);
-            transition: 0.2s; display: flex; align-items: center; gap: 8px; user-select: none; font-size: 0.9rem;
+            padding: 8px 16px; background: var(--bg-body); border: 1px solid var(--border); border-radius: 50px;
+            cursor: pointer; font-weight: 500; color: var(--text-muted); transition: 0.2s; display: flex; align-items: center; gap: 8px; user-select: none;
         }
-        .chip-label:hover { background: var(--border); }
-        .chip-checkbox:checked + .chip-label { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3); }
+        .chip-checkbox:checked + .chip-label { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* BUTTONS */
-        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; font-size: 0.95rem; }
+        /* Buttons */
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
         .btn:hover { transform: translateY(-2px); opacity: 0.9; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border); }
@@ -196,62 +129,90 @@
         .form-actions { display: flex; gap: 10px; margin-top: 25px; }
         .ml-auto { margin-left: auto; display: flex; gap: 10px; }
 
-        /* TABLE */
+        /* --- TABLE --- */
         .table-responsive { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
-        th { background: var(--bg-body); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; padding: 16px; text-align: left; letter-spacing: 0.5px; font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; min-width: 1200px; }
+        th { background: var(--bg-body); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; padding: 16px; text-align: left; font-weight: 700; }
         td { padding: 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-        tr:hover { background-color: rgba(0,0,0,0.02); }
         
-        .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-flex; gap: 6px; align-items: center; cursor: pointer; user-select: none; }
+        /* Deadline Styles */
+        tr.overdue { animation: pulseRed 2s infinite; }
+        tr.overdue td { color: var(--danger); font-weight: 600; }
+        tr.near-deadline { background-color: rgba(245, 158, 11, 0.1); }
+        tr.near-deadline td { color: #d97706; }
+
+        .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
         .status-pending { background: rgba(245, 158, 11, 0.15); color: #d97706; }
         .status-done { background: rgba(16, 185, 129, 0.15); color: #059669; }
 
-        .btn-icon { width: 34px; height: 34px; border-radius: 8px; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; background: transparent; }
-        .btn-icon:hover { background: rgba(0,0,0,0.05); }
-
-        .bulk-actions {
-            background: rgba(37, 99, 235, 0.05); padding: 12px 20px; border-radius: var(--radius);
-            margin-bottom: 20px; display: none; align-items: center; gap: 20px; border: 1px solid rgba(37, 99, 235, 0.2);
-            animation: fadeInUp 0.3s ease-out;
+        /* --- ANALYSIS SECTION (Grid Layout) --- */
+        .analysis-grid { display: grid; grid-template-columns: 3fr 1fr; gap: 25px; }
+        .charts-column { display: flex; flex-direction: column; gap: 25px; }
+        .charts-row { display: flex; gap: 25px; height: 320px; }
+        .chart-box { flex: 1; height: 100%; position: relative; }
+        
+        /* LEADERBOARD (Hall of Fame) */
+        .leaderboard { 
+            background: linear-gradient(145deg, var(--bg-card), rgba(251, 191, 36, 0.05));
+            border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; height: 100%;
+            display: flex; flex-direction: column;
         }
-        .bulk-actions.active { display: flex; }
+        .leaderboard-header { 
+            text-align: center; font-size: 2rem; color: var(--gold); margin-bottom: 20px; 
+            text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3);
+        }
+        .leaderboard-list { flex: 1; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+        
+        .rank-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px;
+            background: var(--bg-body); border: 1px solid var(--border); transition: 0.3s;
+        }
+        .rank-num {
+            width: 32px; height: 32px; border-radius: 50%; background: var(--border);
+            display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;
+        }
+        .rank-info { flex: 1; }
+        .rank-name { font-weight: 700; font-size: 0.95rem; display: block; }
+        .rank-val { font-size: 0.85rem; color: var(--text-muted); font-family: 'Roboto', monospace; }
 
-        /* STICKY FOOTER */
+        /* Top 3 Styles */
+        .rank-item.gold { border: 2px solid var(--gold); background: rgba(251, 191, 36, 0.1); animation: glowGold 2s infinite alternate; }
+        .rank-item.gold .rank-num { background: var(--gold); color: white; }
+        .rank-item.gold .rank-name { color: #b45309; }
+        
+        .rank-item.silver { border: 2px solid var(--silver); background: rgba(148, 163, 184, 0.1); }
+        .rank-item.silver .rank-num { background: var(--silver); color: white; }
+        
+        .rank-item.bronze { border: 2px solid var(--bronze); background: rgba(180, 83, 9, 0.1); }
+        .rank-item.bronze .rank-num { background: var(--bronze); color: white; }
+
+        /* --- FOOTER --- */
         #sticky-footer {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 1540px; background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(12px); color: white; padding: 12px 30px;
-            border-radius: 20px; display: flex; justify-content: space-between;
-            align-items: center; box-shadow: var(--shadow-lg); z-index: 999;
-            border: 1px solid rgba(255,255,255,0.1);
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 1540px;
+            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); color: white; padding: 12px 30px;
+            border-radius: 20px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); z-index: 999; border: 1px solid rgba(255,255,255,0.1);
         }
-        .footer-left { display: flex; align-items: center; gap: 20px; }
-        .footer-total-main { font-size: 2.2rem; font-weight: 800; color: var(--success); font-family: 'Roboto', monospace; letter-spacing: -1px; text-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
-        .footer-right { display: flex; gap: 25px; background: rgba(255,255,255,0.1); padding: 10px 25px; border-radius: 12px; }
-        .mini-stat { display: flex; flex-direction: column; align-items: flex-end; }
-        .mini-stat span { font-size: 0.7rem; opacity: 0.6; font-weight: 600; letter-spacing: 0.5px; }
-        .mini-stat strong { font-family: 'Roboto', monospace; font-size: 1.1rem; }
+        .footer-total-main { font-size: 2.2rem; font-weight: 800; color: var(--success); font-family: 'Roboto', monospace; }
+        .footer-right { display: flex; gap: 20px; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 12px; }
 
-        /* CHARTS */
-        .charts-row { display: flex; gap: 25px; }
-        .chart-box { flex: 1; height: 350px; position: relative; }
-        .chart-box.full { width: 100%; height: 300px; }
-
-        /* TOAST */
+        /* --- TOAST --- */
         #toast {
             position: fixed; top: 25px; right: 25px; background: #1e293b; color: #fff;
             padding: 16px 24px; border-radius: 12px; z-index: 2000; transform: translateX(150%);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: var(--shadow-lg); font-weight: 500; display: flex; align-items: center; gap: 12px;
+            transition: 0.4s; box-shadow: 0 10px 20px rgba(0,0,0,0.2); font-weight: 500;
         }
         #toast.show { transform: translateX(0); }
-        #toast.error { background: var(--danger); }
-        #toast i { font-size: 1.2rem; }
 
-        @media (max-width: 1024px) {
-            .dashboard-grid, .charts-row, .row, .row-3 { grid-template-columns: 1fr; flex-direction: column; }
-            #sticky-footer { flex-direction: column; gap: 15px; width: 85%; padding: 20px; bottom: 10px; }
+        @media (max-width: 1200px) {
+            .analysis-grid { grid-template-columns: 1fr; }
+            .charts-row { flex-direction: column; height: auto; }
+            .chart-box { height: 300px; }
+            .leaderboard { height: 400px; }
+        }
+        @media (max-width: 768px) {
+            .dashboard-grid, .row, .row-3 { grid-template-columns: 1fr; }
+            #sticky-footer { flex-direction: column; width: 85%; bottom: 10px; }
             .footer-right { width: 100%; justify-content: space-between; }
         }
     </style>
@@ -259,47 +220,38 @@
 <body>
 
     <header>
-        <div id="logo"><i class="fas fa-layer-group"></i> İSTANBUL TEKNİK LAZER</div>
-        
+        <div id="logo"><i class="fas fa-laser"></i> İSTANBUL TEKNİK LAZER</div>
         <div class="live-ticker">
             <div class="ticker-item"><i class="fas fa-dollar-sign" style="color:#f59e0b"></i> <span id="live-usd">00.00</span></div>
             <div style="width:1px; background:#e2e8f0; height:20px; margin:auto 0;"></div>
             <div class="ticker-item"><i class="fas fa-euro-sign" style="color:#3b82f6"></i> <span id="live-eur">00.00</span></div>
         </div>
-
         <div class="header-actions">
-            <button id="toggle-mode" title="Gece/Gündüz Modu"><i class="fas fa-moon"></i></button>
-            <button onclick="window.open('https://google.com')" title="Google"><i class="fab fa-google"></i></button>
+            <button id="toggle-mode"><i class="fas fa-moon"></i></button>
+            <button onclick="window.open('https://google.com')"><i class="fab fa-google"></i></button>
         </div>
     </header>
 
     <main>
-        <!-- İstatistikler -->
+        <!-- İstatistik Kartları -->
         <div class="card animate-in">
             <div class="dashboard-grid">
                 <div class="stat-card">
                     <h4>Toplam İş Kaydı</h4>
                     <p id="stat-total-jobs">0</p>
-                    <div class="stat-sub"><i class="fas fa-filter"></i> Seçilen Tarih Aralığında</div>
+                    <div class="stat-sub"><i class="fas fa-calendar-alt"></i> Seçilen Tarih Aralığında</div>
                     <i class="fas fa-folder-open stat-icon"></i>
                 </div>
                 <div class="stat-card">
-                    <h4>Bu Ayın Lideri (Adet)</h4>
+                    <h4>Bu Ay En Çok İş (Adet)</h4>
                     <p id="stat-top-count">-</p>
-                    <div class="stat-sub">En çok iş gelen firma</div>
-                    <i class="fas fa-medal stat-icon"></i>
+                    <i class="fas fa-layer-group stat-icon"></i>
                 </div>
-                <!-- Ciro Şampiyonu (Title yok, Taç var) -->
-                <div class="stat-card champion">
-                    <div class="champion-content">
-                        <div class="champion-icon"><i class="fas fa-crown"></i></div>
-                        <div>
-                            <div style="font-size:0.85rem; color:var(--text-muted); font-weight:600; text-transform:uppercase;">CİRO LİDERİ</div>
-                            <div id="stat-top-firm" style="font-size:1.4rem; font-weight:800; color:var(--text-main); margin-top:2px;">-</div>
-                            <div id="stat-top-value" style="font-size:1.1rem; color:var(--success); font-weight:700;">- ₺</div>
-                        </div>
-                    </div>
-                    <i class="fas fa-trophy stat-icon"></i>
+                <div class="stat-card">
+                    <h4>Bu Ay Ciro Şampiyonu</h4>
+                    <p id="stat-top-value">-</p>
+                    <div class="stat-sub"><i class="fas fa-crown"></i> Ciro Lideri</div>
+                    <i class="fas fa-chart-line stat-icon"></i>
                 </div>
             </div>
         </div>
@@ -312,46 +264,63 @@
             
             <div class="row">
                 <div class="input-group">
-                    <label style="font-size:0.9rem; font-weight:600; display:block; margin-bottom:6px;">Firma</label>
+                    <label>Firma</label>
                     <input type="text" id="firm-name" placeholder="Firma Seçin veya Yazın..." list="firmList">
                     <datalist id="firmList"></datalist>
                 </div>
                 <div class="input-group">
-                    <label style="font-size:0.9rem; font-weight:600; display:block; margin-bottom:6px;">Program / Parça Adı</label>
+                    <label>Program / Parça Adı</label>
                     <input type="text" id="program-name" placeholder="Benzersiz Program Adı Giriniz">
                 </div>
             </div>
             
-            <div class="input-group">
-                <label style="font-size:0.9rem; font-weight:600; display:block; margin-bottom:6px;">Yapılan İşin Açıklaması</label>
-                <input type="text" id="description" placeholder="Örn: 10mm DKP Sac Kesim" list="descList">
-                <datalist id="descList"></datalist>
+            <div class="row">
+                <div class="input-group">
+                    <label>Yapılan İşin Açıklaması</label>
+                    <input type="text" id="description" placeholder="İş detayı..." list="descList">
+                    <datalist id="descList"></datalist>
+                </div>
+                <!-- Yeni Özellik: Malzeme -->
+                <div class="input-group">
+                    <label>Malzeme (Opsiyonel)</label>
+                    <input type="text" id="material" placeholder="Örn: 2mm DKP, 1mm Paslanmaz" list="matList">
+                    <datalist id="matList">
+                        <option value="DKP Sac"></option>
+                        <option value="Paslanmaz"></option>
+                        <option value="Alüminyum"></option>
+                        <option value="Pirinç"></option>
+                        <option value="Bakır"></option>
+                    </datalist>
+                </div>
             </div>
 
             <div class="row-3">
                 <div class="input-group">
-                    <label style="font-size:0.9rem; font-weight:600; display:block; margin-bottom:6px;">Tutar</label>
+                    <label>Tutar</label>
                     <input type="number" id="amount" placeholder="0.00" step="0.01">
                 </div>
                 <div class="input-group">
-                    <label style="font-size:0.9rem; font-weight:600; display:block; margin-bottom:6px;">Para Birimi</label>
+                    <label>Para Birimi</label>
                     <select id="currency">
                         <option value="TL">TL (₺)</option>
                         <option value="USD">USD ($)</option>
                         <option value="EUR">EUR (€)</option>
                     </select>
                 </div>
+                <!-- Yeni Özellik: Termin -->
+                <div class="input-group">
+                    <label>Termin Tarihi</label>
+                    <input type="date" id="deadline">
+                </div>
             </div>
 
             <div class="input-group">
-                <label style="font-size:0.9rem; font-weight:600; display:block; margin-bottom:6px;">Uygulanan İşlemler</label>
+                <label>Uygulanan İşlemler</label>
                 <div class="chip-container">
                     <input type="checkbox" id="c1" value="Lazer" class="chip-checkbox" name="islem"><label for="c1" class="chip-label">Lazer Kesim</label>
                     <input type="checkbox" id="c2" value="Büküm" class="chip-checkbox" name="islem"><label for="c2" class="chip-label">Büküm</label>
                     <input type="checkbox" id="c3" value="Kaynak" class="chip-checkbox" name="islem"><label for="c3" class="chip-label">Kaynak</label>
-                    <input type="checkbox" id="c4" value="Makas" class="chip-checkbox" name="islem"><label for="c4" class="chip-label">Makas</label>
-                    <input type="checkbox" id="c5" value="Montaj" class="chip-checkbox" name="islem"><label for="c5" class="chip-label">Montaj</label>
-                    <input type="checkbox" id="c6" value="Boya" class="chip-checkbox" name="islem"><label for="c6" class="chip-label">Boya</label>
+                    <input type="checkbox" id="c4" value="Montaj" class="chip-checkbox" name="islem"><label for="c4" class="chip-label">Montaj</label>
                 </div>
             </div>
 
@@ -367,46 +336,66 @@
             </div>
         </div>
 
-        <!-- Liste ve Filtreler -->
+        <!-- Analiz Alanı (Grafikler + Liderlik) -->
         <div class="card animate-in delay-2">
+            <div class="card-header"><h3><i class="fas fa-chart-pie"></i> Performans & Finansal Analiz</h3></div>
+            
+            <div class="analysis-grid">
+                <!-- Sol Kolon: Grafikler -->
+                <div class="charts-column">
+                    <div class="charts-row">
+                        <div class="chart-box">
+                            <h5 style="text-align:center; color:var(--text-muted); margin-bottom:10px;">Firma Ciro Sıralaması</h5>
+                            <canvas id="chart-bar"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <h5 style="text-align:center; color:var(--text-muted); margin-bottom:10px;">Ciro Dağılımı</h5>
+                            <canvas id="chart-pie"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-box" style="height:250px;">
+                        <h5 style="text-align:center; color:var(--text-muted); margin-bottom:10px;">Günlük İş Akışı</h5>
+                        <canvas id="chart-line"></canvas>
+                    </div>
+                </div>
+
+                <!-- Sağ Kolon: Liderlik Tablosu (Hall of Fame) -->
+                <div class="leaderboard">
+                    <div class="leaderboard-header"><i class="fas fa-crown"></i></div>
+                    <div class="leaderboard-list" id="leaderboard-list">
+                        <!-- JS ile dolacak -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- İş Listesi -->
+        <div class="card animate-in delay-3">
             <div class="card-header">
                 <h3><i class="fas fa-list-check"></i> İş Listesi</h3>
-            </div>
-            
-            <!-- Tarih ve Arama Filtresi -->
-            <div class="filter-bar">
-                <div class="date-input-group">
-                    <label>Başlangıç:</label>
-                    <input type="date" id="startDate" onchange="renderTable(); updateAllUI()">
-                </div>
-                <div class="date-input-group">
-                    <label>Bitiş:</label>
-                    <input type="date" id="endDate" onchange="renderTable(); updateAllUI()">
-                </div>
-                <div style="flex-grow:1; display:flex; justify-content:flex-end;">
-                    <input type="text" id="search" placeholder="Firma veya Proje Ara..." oninput="renderTable()" style="width:250px;">
+                <div style="display:flex; gap:10px;">
+                    <input type="date" id="startDate" onchange="renderTable(); updateAllUI()" style="width:140px;">
+                    <input type="date" id="endDate" onchange="renderTable(); updateAllUI()" style="width:140px;">
+                    <input type="text" id="search" placeholder="Ara..." oninput="renderTable()" style="width:200px;">
                 </div>
             </div>
-            <br>
 
-            <!-- Toplu İşlem -->
             <div id="bulk-actions" class="bulk-actions">
-                <i class="fas fa-check-double" style="color:var(--primary); font-size:1.2rem;"></i>
-                <span id="selected-count" style="font-weight:700; color:var(--text-main)">0 kayıt seçildi</span>
-                <span style="color:var(--text-muted); font-size:0.9rem;">(Tüm sayfalardaki filtrelenmiş veriler)</span>
-                <button class="btn btn-success" style="margin-left:auto" onclick="bulkInvoice()"><i class="fas fa-file-invoice-dollar"></i> Seçilenleri Faturalandır</button>
+                <span id="selected-count" style="font-weight:700;">0 kayıt seçildi</span>
+                <button class="btn btn-success" style="margin-left:auto; padding:6px 15px;" onclick="bulkInvoice()"><i class="fas fa-check"></i> Seçilenleri Faturalandır</button>
             </div>
 
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
-                            <th style="width:40px; text-align:center;"><input type="checkbox" id="select-all" onclick="toggleSelectAll()" style="width:18px; height:18px; cursor:pointer;"></th>
+                            <th style="width:40px;"><input type="checkbox" id="select-all" onclick="toggleSelectAll()"></th>
                             <th>Tarih</th>
                             <th>Firma & Proje</th>
-                            <th>Açıklama</th>
+                            <th>Açıklama & Malzeme</th>
                             <th>Tutar</th>
                             <th>TL Karşılığı</th>
+                            <th>Termin</th>
                             <th>Durum</th>
                             <th style="text-align:right;">Yönet</th>
                         </tr>
@@ -417,31 +406,8 @@
 
             <div style="margin-top:20px; display:flex; justify-content:center; gap:10px;">
                 <button class="btn-icon" onclick="changePage(-1)"><i class="fas fa-chevron-left"></i></button>
-                <span id="page-indicator" style="align-self:center; font-weight:600; color:var(--text-muted); font-variant-numeric: tabular-nums;">Sayfa 1</span>
+                <span id="page-indicator" style="align-self:center; font-weight:600; color:var(--text-muted);">Sayfa 1</span>
                 <button class="btn-icon" onclick="changePage(1)"><i class="fas fa-chevron-right"></i></button>
-            </div>
-        </div>
-
-        <!-- Grafikler -->
-        <div class="card animate-in delay-3">
-            <div class="card-header"><h3><i class="fas fa-chart-line"></i> Performans & Finansal Analiz</h3></div>
-            
-            <div class="charts-row" style="margin-bottom:30px;">
-                <div class="chart-box">
-                    <h5 style="text-align:center; color:var(--text-muted); margin-bottom:10px;">Firma Performansı (Ciro)</h5>
-                    <canvas id="chart-bar"></canvas>
-                </div>
-                <div class="chart-box">
-                    <h5 style="text-align:center; color:var(--text-muted); margin-bottom:10px;">Ciro Dağılımı</h5>
-                    <canvas id="chart-pie"></canvas>
-                </div>
-            </div>
-            
-            <hr style="border:0; border-top:1px solid var(--border); margin:20px 0;">
-            
-            <div class="chart-box full">
-                <h5 style="text-align:center; color:var(--text-muted); margin-bottom:10px;">Günlük Ciro Akışı (Zaman Çizelgesi)</h5>
-                <canvas id="chart-line"></canvas>
             </div>
         </div>
     </main>
@@ -461,25 +427,22 @@
         </div>
     </div>
 
-    <!-- Toast -->
     <div id="toast"><i class="fas fa-check-circle"></i> <span>İşlem Başarılı</span></div>
 
     <script>
-        // --- STATE & CONFIG ---
+        // --- GLOBAL VARIABLES ---
         let entries = JSON.parse(localStorage.getItem('entries')) || [];
         let rates = { USD: 30.00, EUR: 33.00, lastUpdate: 0 };
         let currentPage = 1;
         const perPage = 10;
         let editingId = null;
-        let selectedIds = new Set(); // Global seçim için Set
+        let selectedIds = new Set();
 
-        // --- INITIALIZATION ---
+        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             initWebSocket();
-            setInitialDates();
             updateAllUI();
             
-            // Theme Init
             if(localStorage.getItem('nightMode') === 'true') document.body.classList.add('night-mode');
             document.getElementById('toggle-mode').onclick = () => {
                 document.body.classList.toggle('night-mode');
@@ -488,13 +451,7 @@
             };
         });
 
-        function setInitialDates() {
-            // Varsayılan olarak bu ayın başı ve sonu seçili gelebilir veya boş bırakılabilir.
-            // İsteğe bağlı, şu an boş bırakıyorum ki tüm veriler görünsün.
-            // document.getElementById('startDate').valueAsDate = new Date();
-        }
-
-        // --- WEBSOCKET (BINANCE) ---
+        // --- WEBSOCKET ---
         function initWebSocket() {
             const ws = new WebSocket("wss://stream.binance.com:9443/stream?streams=usdttry@trade/eurusdt@trade");
             let rawUsd = 0, rawEurUsd = 0;
@@ -509,13 +466,11 @@
                 } else if(data.stream === 'eurusdt@trade') {
                     rawEurUsd = price;
                 }
-
                 if(rawUsd && rawEurUsd) {
                     const eurTry = rawUsd * rawEurUsd;
                     document.getElementById('live-eur').innerText = eurTry.toFixed(2);
                     rates.EUR = eurTry;
                 }
-
                 if(Date.now() - rates.lastUpdate > 1000) {
                     updateAllUI();
                     rates.lastUpdate = Date.now();
@@ -523,26 +478,22 @@
             };
         }
 
-        // --- CORE FUNCTIONS ---
+        // --- DATA LOGIC ---
         function getFilteredData() {
             const search = document.getElementById('search').value.toLowerCase();
             const startStr = document.getElementById('startDate').value;
             const endStr = document.getElementById('endDate').value;
-            
             const startDate = startStr ? new Date(startStr) : null;
             const endDate = endStr ? new Date(endStr) : null;
             if(startDate) startDate.setHours(0,0,0,0);
             if(endDate) endDate.setHours(23,59,59,999);
 
             return entries.filter(e => {
-                // Parse DD.MM.YYYY to Date Object
-                const parts = e.date.split('.');
-                const entryDate = new Date(parts[2], parts[1]-1, parts[0]);
-
+                const p = e.date.split('.');
+                const entryDate = new Date(p[2], p[1]-1, p[0]);
                 const matchesSearch = e.firm.toLowerCase().includes(search) || (e.prog && e.prog.toLowerCase().includes(search));
                 const matchesStart = startDate ? entryDate >= startDate : true;
                 const matchesEnd = endDate ? entryDate <= endDate : true;
-
                 return matchesSearch && matchesStart && matchesEnd;
             });
         }
@@ -552,8 +503,9 @@
             updateFooterTotals();
             updateDashboard();
             updateCharts();
+            updateLeaderboard();
             updateDatalists();
-            checkBulk(); // Update bulk UI based on selection
+            checkBulk();
         }
 
         function addData(andNew = false) {
@@ -563,10 +515,11 @@
             
             if(!firm || !amt) { showToast('Firma ve Tutar zorunludur!', true); return; }
 
-            // DUPLICATE CHECK (Program Name)
+            // Program Adı Çakışma Kontrolü (Aynı isim olamaz)
             if(prog && !editingId) {
-                const exists = entries.some(e => e.prog && e.prog.toLowerCase() === prog.toLowerCase());
-                if(exists) { showToast('Bu Program Adı zaten kayıtlı!', true); return; }
+                if(entries.some(e => e.prog && e.prog.toLowerCase() === prog.toLowerCase())) {
+                    showToast('Bu program adı zaten kullanılıyor!', true); return;
+                }
             }
 
             const entry = {
@@ -575,8 +528,10 @@
                 firm: firm,
                 prog: prog,
                 desc: document.getElementById('description').value,
+                material: document.getElementById('material').value, // Yeni
                 amt: amt,
                 curr: document.getElementById('currency').value,
+                deadline: document.getElementById('deadline').value, // Yeni
                 tasks: Array.from(document.querySelectorAll('input[name="islem"]:checked')).map(c=>c.value),
                 status: 'Bekliyor'
             };
@@ -584,10 +539,10 @@
             if(editingId) {
                 entries = entries.map(e => e.id === editingId ? entry : e);
                 editingId = null;
-                showToast('Kayıt başarıyla güncellendi');
+                showToast('Kayıt güncellendi');
             } else {
                 entries.unshift(entry);
-                showToast('Yeni iş başarıyla eklendi');
+                showToast('Kayıt eklendi');
             }
             save();
             if(!andNew) clearForm();
@@ -595,210 +550,129 @@
 
         function clearForm() {
             document.querySelectorAll('input').forEach(i => {
-                if(i.type!='checkbox' && i.type!='file' && i.type!='date') i.value='';
+                if(i.type!='checkbox'&&i.type!='file') i.value='';
                 if(i.type=='checkbox') i.checked=false;
             });
             editingId = null;
         }
 
-        function save() {
-            localStorage.setItem('entries', JSON.stringify(entries));
-            updateAllUI();
+        function save() { localStorage.setItem('entries', JSON.stringify(entries)); updateAllUI(); }
+
+        // --- VISUALIZATIONS ---
+        function updateLeaderboard() {
+            const data = getFilteredData();
+            const firmData = {};
+            data.forEach(e => {
+                let v = e.amt;
+                if(e.curr==='USD') v*=rates.USD; if(e.curr==='EUR') v*=rates.EUR;
+                firmData[e.firm] = (firmData[e.firm]||0)+v;
+            });
+            const sorted = Object.entries(firmData).sort((a,b)=>b[1]-a[1]).slice(0, 5);
+            
+            const container = document.getElementById('leaderboard-list');
+            container.innerHTML = '';
+            
+            sorted.forEach((item, index) => {
+                let rankClass = '';
+                if(index === 0) rankClass = 'gold';
+                else if(index === 1) rankClass = 'silver';
+                else if(index === 2) rankClass = 'bronze';
+                
+                const div = document.createElement('div');
+                div.className = `rank-item ${rankClass}`;
+                div.innerHTML = `
+                    <div class="rank-num">${index+1}</div>
+                    <div class="rank-info">
+                        <span class="rank-name">${item[0]}</span>
+                        <span class="rank-val">${item[1].toLocaleString('tr-TR',{maximumFractionDigits:0})} ₺</span>
+                    </div>
+                    ${index===0 ? '<i class="fas fa-crown" style="color:#b45309"></i>' : ''}
+                `;
+                container.appendChild(div);
+            });
+            if(sorted.length===0) container.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Kayıt Yok</div>';
         }
 
-        // --- IMPORT / EXPORT ---
-        function importCSV(input) {
-            const file = input.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const text = e.target.result;
-                const lines = text.split('\n').slice(1);
-                lines.forEach(line => {
-                    if(!line.trim()) return;
-                    const cols = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-                    if(cols && cols.length >= 6) {
-                        const clean = (s) => s ? s.replace(/"/g, '') : '';
-                        entries.push({
-                            id: Date.now() + Math.random(),
-                            date: clean(cols[1]),
-                            firm: clean(cols[2]),
-                            prog: clean(cols[3]),
-                            desc: clean(cols[4]),
-                            amt: parseFloat(cols[5]),
-                            curr: clean(cols[6]),
-                            status: clean(cols[7]) || 'Bekliyor',
-                            tasks: clean(cols[8]) ? clean(cols[8]).split('|') : []
-                        });
-                    }
-                });
-                save();
-                showToast('Veriler başarıyla içe aktarıldı');
-                input.value = '';
-            };
-            reader.readAsText(file);
+        function updateCharts() {
+            const data = getFilteredData();
+            const firmData = {};
+            const dailyData = {};
+            data.forEach(e => {
+                let v = e.amt;
+                if(e.curr==='USD') v*=rates.USD; if(e.curr==='EUR') v*=rates.EUR;
+                firmData[e.firm] = (firmData[e.firm]||0)+v;
+                const iso = e.date.split('.').reverse().join('-');
+                dailyData[iso] = (dailyData[iso]||0)+v;
+            });
+
+            const sortedFirms = Object.entries(firmData).sort((a,b)=>b[1]-a[1]);
+            const top10 = sortedFirms.slice(0,10);
+
+            // Pie
+            let pLabels = [], pVals = [];
+            sortedFirms.slice(0,5).forEach(x=>{pLabels.push(x[0]); pVals.push(x[1]);});
+            if(sortedFirms.length>5) { pLabels.push('Diğerleri'); pVals.push(sortedFirms.slice(5).reduce((a,c)=>a+c[1],0)); }
+
+            // Line
+            const dates = Object.keys(dailyData).sort();
+            const lVals = dates.map(d=>dailyData[d]);
+
+            const isDark = document.body.classList.contains('night-mode');
+            const color = isDark ? '#94a3b8' : '#64748b';
+            
+            // Bar
+            if(window.chartBar) window.chartBar.destroy();
+            window.chartBar = new Chart(document.getElementById('chart-bar'), {
+                type: 'bar',
+                data: { labels: top10.map(x=>x[0]), datasets: [{ data: top10.map(x=>x[1]), backgroundColor: '#2563eb', borderRadius:4 }] },
+                options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{color},grid:{display:false}}, y:{ticks:{color},grid:{color:isDark?'#334155':'#e2e8f0'}}} }
+            });
+
+            // Pie
+            if(window.chartPie) window.chartPie.destroy();
+            window.chartPie = new Chart(document.getElementById('chart-pie'), {
+                type: 'doughnut',
+                data: { labels: pLabels, datasets: [{ data: pVals, backgroundColor: ['#2563eb','#3b82f6','#60a5fa','#93c5fd','#10b981','#f59e0b'], borderWidth:0 }] },
+                options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom', labels:{color}}} }
+            });
+
+            // Line
+            if(window.chartLine) window.chartLine.destroy();
+            window.chartLine = new Chart(document.getElementById('chart-line'), {
+                type: 'line',
+                data: { labels: dates.map(d=>{const p=d.split('-'); return `${p[2]}.${p[1]}`}), datasets: [{ label:'Günlük Ciro', data: lVals, borderColor:'#10b981', backgroundColor:'rgba(16, 185, 129, 0.1)', fill:true, tension:0.4 }] },
+                options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{color},grid:{display:false}}, y:{ticks:{color},grid:{color:isDark?'#334155':'#e2e8f0'}}} }
+            });
         }
 
-        function exportCSV() {
-            const data = getFilteredData(); // Export only filtered
-            const header = ["ID","Tarih","Firma","Program","Aciklama","Tutar","ParaBirimi","Durum","Islemler"];
-            const rows = data.map(e => [
-                e.id, e.date, `"${e.firm}"`, `"${e.prog}"`, `"${e.desc}"`, e.amt, e.curr, e.status, `"${e.tasks.join('|')}"`
-            ]);
-            const csv = "data:text/csv;charset=utf-8," + header.join(",") + "\n" + rows.map(r=>r.join(",")).join("\n");
-            const link = document.createElement("a");
-            link.href = encodeURI(csv);
-            link.download = "istanbul_teknik_lazer_data.csv";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // --- PASSWORD PROTECTED RESET ---
-        function clearAllData() {
-            const pwd = prompt("Sıfırlamak için şifreyi giriniz:");
-            if(pwd === "1234") {
-                if(confirm("DİKKAT! Tüm veriler silinecek. Emin misiniz?")) {
-                    entries = [];
-                    save();
-                    showToast('Sistem başarıyla sıfırlandı');
-                }
-            } else if(pwd !== null) {
-                showToast('Hatalı Şifre!', true);
-            }
-        }
-
-        // --- DASHBOARD UPDATES ---
+        // --- DASHBOARD ---
         function updateDashboard() {
             const data = getFilteredData();
             document.getElementById('stat-total-jobs').innerText = data.length;
-
+            
             if(data.length > 0) {
-                // Count Leader
                 const counts = {};
                 data.forEach(e => counts[e.firm] = (counts[e.firm]||0)+1);
                 const topC = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
                 document.getElementById('stat-top-count').innerText = `${topC[0]} (${topC[1]})`;
 
-                // Revenue Leader (Convert to TL)
                 const values = {};
                 data.forEach(e => {
-                    let v = e.amt;
-                    if(e.curr==='USD') v*=rates.USD;
-                    if(e.curr==='EUR') v*=rates.EUR;
+                    let v = e.amt; if(e.curr==='USD') v*=rates.USD; if(e.curr==='EUR') v*=rates.EUR;
                     values[e.firm] = (values[e.firm]||0)+v;
                 });
                 const topV = Object.entries(values).sort((a,b)=>b[1]-a[1])[0];
-                
-                document.getElementById('stat-top-firm').innerText = topV[0];
-                document.getElementById('stat-top-value').innerText = topV[1].toLocaleString('tr-TR',{maximumFractionDigits:0}) + " ₺";
+                document.getElementById('stat-top-value').innerHTML = `${topV[0]} <br><span style="font-size:1.1rem;color:var(--success)">${topV[1].toLocaleString('tr-TR',{maximumFractionDigits:0})} ₺</span>`;
             } else {
                 document.getElementById('stat-top-count').innerText = '-';
-                document.getElementById('stat-top-firm').innerText = '-';
-                document.getElementById('stat-top-value').innerText = '- ₺';
+                document.getElementById('stat-top-value').innerText = '-';
             }
         }
 
-        // --- CHART UPDATES ---
-        let chartBar, chartPie, chartLine;
-        function updateCharts() {
-            const data = getFilteredData();
-            const firmData = {};
-            const dailyData = {};
-
-            data.forEach(e => {
-                // Convert to TL
-                let v = e.amt;
-                if(e.curr==='USD') v*=rates.USD;
-                if(e.curr==='EUR') v*=rates.EUR;
-                
-                // For Bar/Pie
-                firmData[e.firm] = (firmData[e.firm]||0)+v;
-
-                // For Line (Date parsing for sorting)
-                const p = e.date.split('.');
-                const isoDate = `${p[2]}-${p[1]}-${p[0]}`; // YYYY-MM-DD for sorting
-                dailyData[isoDate] = (dailyData[isoDate]||0)+v;
-            });
-
-            const sortedFirms = Object.entries(firmData).sort((a,b)=>b[1]-a[1]);
-            const top10 = sortedFirms.slice(0,10);
-            
-            // Pie Data
-            let pieLabels = [], pieValues = [];
-            sortedFirms.slice(0, 5).forEach(x => { pieLabels.push(x[0]); pieValues.push(x[1]); });
-            if(sortedFirms.length > 5) {
-                pieLabels.push('Diğerleri');
-                pieValues.push(sortedFirms.slice(5).reduce((acc,c)=>acc+c[1],0));
-            }
-
-            // Line Data (Sorted by Date)
-            const sortedDates = Object.keys(dailyData).sort();
-            const lineValues = sortedDates.map(d => dailyData[d]);
-            // Format labels back to DD.MM
-            const lineLabels = sortedDates.map(d => {
-                const p = d.split('-');
-                return `${p[2]}.${p[1]}`;
-            });
-
-            const isDark = document.body.classList.contains('night-mode');
-            const color = isDark ? '#94a3b8' : '#64748b';
-            const gridColor = isDark ? '#334155' : '#e2e8f0';
-
-            // 1. Bar Chart
-            if(chartBar) chartBar.destroy();
-            chartBar = new Chart(document.getElementById('chart-bar'), {
-                type: 'bar',
-                data: {
-                    labels: top10.map(x=>x[0]),
-                    datasets: [{ label: 'Ciro (TL)', data: top10.map(x=>x[1]), backgroundColor: '#2563eb', borderRadius:4 }]
-                },
-                options: { 
-                    responsive: true, maintainAspectRatio: false,
-                    scales: { x: {ticks:{color}, grid:{display:false}}, y: {ticks:{color}, grid:{color:gridColor}} },
-                    plugins: { legend: {display:false} }
-                }
-            });
-
-            // 2. Pie Chart
-            if(chartPie) chartPie.destroy();
-            chartPie = new Chart(document.getElementById('chart-pie'), {
-                type: 'doughnut',
-                data: {
-                    labels: pieLabels,
-                    datasets: [{ data: pieValues, backgroundColor: ['#2563eb','#3b82f6','#60a5fa','#93c5fd','#10b981','#f59e0b'], borderWidth:0 }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {position:'right', labels:{color}} } }
-            });
-
-            // 3. Line Chart
-            if(chartLine) chartLine.destroy();
-            chartLine = new Chart(document.getElementById('chart-line'), {
-                type: 'line',
-                data: {
-                    labels: lineLabels,
-                    datasets: [{
-                        label: 'Günlük Ciro',
-                        data: lineValues,
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: { x: {ticks:{color}, grid:{display:false}}, y: {ticks:{color}, grid:{color:gridColor}} },
-                    plugins: { legend: {display:false} }
-                }
-            });
-        }
-
-        // --- TABLE RENDER & GLOBAL SELECT ---
+        // --- TABLE ---
         function renderTable() {
             const tbody = document.getElementById('table-body');
             tbody.innerHTML = '';
-            
             const filtered = getFilteredData();
             const totalPages = Math.ceil(filtered.length / perPage) || 1;
             if(currentPage > totalPages) currentPage = 1;
@@ -807,18 +681,43 @@
             const start = (currentPage-1)*perPage;
             const pageData = filtered.slice(start, start+perPage);
 
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
             pageData.forEach(e => {
                 const isChecked = selectedIds.has(e.id) ? 'checked' : '';
                 const statusClass = e.status==='Faturalandı' ? 'status-done' : 'status-pending';
                 
+                // Deadline Logic
+                let deadlineInfo = '-';
+                let rowClass = '';
+                if(e.deadline && e.status === 'Bekliyor') {
+                    const dDate = new Date(e.deadline);
+                    const diffTime = dDate - today;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    if(diffDays < 0) {
+                        deadlineInfo = `<span style="color:var(--danger)"><i class="fas fa-exclamation-circle"></i> ${Math.abs(diffDays)} gün geçti</span>`;
+                        rowClass = 'overdue';
+                    } else {
+                        deadlineInfo = `${diffDays} gün kaldı`;
+                        if(diffDays <= 2) rowClass = 'near-deadline';
+                    }
+                } else if(e.deadline) {
+                    const p = e.deadline.split('-');
+                    deadlineInfo = `${p[2]}.${p[1]}`; // Show date if done
+                }
+
                 const tr = document.createElement('tr');
+                tr.className = rowClass;
                 tr.innerHTML = `
                     <td style="text-align:center;"><input type="checkbox" class="row-chk" value="${e.id}" ${isChecked} onchange="toggleRow(${e.id})"></td>
                     <td>${e.date}</td>
                     <td><b>${e.firm}</b><br><small style="color:var(--text-muted);">${e.prog||''}</small></td>
-                    <td>${e.desc} <br> <small style="opacity:0.7">${e.tasks.join(', ')}</small></td>
+                    <td>${e.desc}<br><small style="color:#666">${e.material ? e.material : ''}</small></td>
                     <td style="font-weight:600; color:${e.curr=='USD'?'#10b981':e.curr=='EUR'?'#3b82f6':'inherit'}">${e.amt.toLocaleString()} ${e.curr}</td>
                     <td class="live-calc" data-amt="${e.amt}" data-curr="${e.curr}">-- ₺</td>
+                    <td style="font-size:0.85rem">${deadlineInfo}</td>
                     <td><span class="status-pill ${statusClass}" onclick="toggleStatusOne(${e.id})">${e.status}</span></td>
                     <td style="text-align:right;">
                         <button class="btn-icon" onclick="editEntry(${e.id})"><i class="fas fa-pen"></i></button>
@@ -828,60 +727,13 @@
                 tbody.appendChild(tr);
             });
             updateTableLiveValues();
-            
-            // Master checkbox state
-            const allVisibleSelected = pageData.length > 0 && pageData.every(e => selectedIds.has(e.id));
-            document.getElementById('select-all').checked = allVisibleSelected;
+            const allSelected = pageData.length > 0 && pageData.every(e => selectedIds.has(e.id));
+            document.getElementById('select-all').checked = allSelected;
         }
 
-        function toggleSelectAll() {
-            const master = document.getElementById('select-all').checked;
-            const filtered = getFilteredData(); // Tüm filtrelenmiş veriyi al
-            
-            if(master) {
-                filtered.forEach(e => selectedIds.add(e.id));
-            } else {
-                selectedIds.clear();
-            }
-            renderTable();
-            checkBulk();
-        }
-
-        function toggleRow(id) {
-            if(selectedIds.has(id)) selectedIds.delete(id);
-            else selectedIds.add(id);
-            renderTable(); // Update master checkbox visual
-            checkBulk();
-        }
-
-        function checkBulk() {
-            const count = selectedIds.size;
-            const panel = document.getElementById('bulk-actions');
-            document.getElementById('selected-count').innerText = `${count} kayıt seçildi`;
-            if(count > 0) panel.classList.add('active'); else panel.classList.remove('active');
-        }
-
-        function bulkInvoice() {
-            if(selectedIds.size === 0) return;
-            if(confirm(`${selectedIds.size} adet kaydı faturalandırmak istiyor musunuz?`)) {
-                entries.forEach(e => {
-                    if(selectedIds.has(e.id)) e.status = 'Faturalandı';
-                });
-                selectedIds.clear();
-                save();
-                showToast('Seçilen kayıtlar güncellendi');
-            }
-        }
-
-        function toggleStatusOne(id) {
-            const e = entries.find(x=>x.id===id);
-            e.status = e.status==='Bekliyor'?'Faturalandı':'Bekliyor';
-            save();
-        }
-
-        // --- HELPERS ---
+        // --- HELPERS (Update, Toggle, Import/Export, etc.) ---
         function updateFooterTotals() {
-            const data = getFilteredData(); // Use filtered data for totals
+            const data = getFilteredData();
             let sTL=0, sUSD=0, sEUR=0;
             data.forEach(e => {
                 const v = parseFloat(e.amt)||0;
@@ -889,65 +741,99 @@
                 if(e.curr==='USD') sUSD+=v;
                 if(e.curr==='EUR') sEUR+=v;
             });
-            document.getElementById('sum-tl').innerText = '₺'+sTL.toLocaleString('tr-TR');
-            document.getElementById('sum-usd').innerText = '$'+sUSD.toLocaleString('en-US');
-            document.getElementById('sum-eur').innerText = '€'+sEUR.toLocaleString('de-DE');
-            
+            document.getElementById('sum-tl').innerText='₺'+sTL.toLocaleString('tr-TR');
+            document.getElementById('sum-usd').innerText='$'+sUSD.toLocaleString('en-US');
+            document.getElementById('sum-eur').innerText='€'+sEUR.toLocaleString('de-DE');
             const total = sTL + (sUSD*rates.USD) + (sEUR*rates.EUR);
             document.getElementById('grand-total-tl').innerText = total.toLocaleString('tr-TR',{minimumFractionDigits:2}) + ' ₺';
         }
-
         function updateTableLiveValues() {
             document.querySelectorAll('.live-calc').forEach(td => {
-                const a = parseFloat(td.dataset.amt);
-                const c = td.dataset.curr;
-                let v = a;
-                if(c==='USD') v=a*rates.USD;
-                if(c==='EUR') v=a*rates.EUR;
+                const a=parseFloat(td.dataset.amt), c=td.dataset.curr;
+                let v=a; if(c==='USD') v=a*rates.USD; if(c==='EUR') v=a*rates.EUR;
                 td.innerText = v.toLocaleString('tr-TR',{maximumFractionDigits:2}) + ' ₺';
             });
         }
-
-        function updateDatalists() {
-            const firms = [...new Set(entries.map(e=>e.firm))];
-            const descs = [...new Set(entries.map(e=>e.desc))];
-            document.getElementById('firmList').innerHTML = firms.map(f=>`<option value="${f}">`).join('');
-            document.getElementById('descList').innerHTML = descs.map(d=>`<option value="${d}">`).join('');
+        function toggleSelectAll() {
+            const m = document.getElementById('select-all').checked;
+            const filtered = getFilteredData();
+            if(m) filtered.forEach(e=>selectedIds.add(e.id)); else selectedIds.clear();
+            renderTable(); checkBulk();
         }
-
-        function editEntry(id) {
-            const e = entries.find(x=>x.id===id);
-            document.getElementById('firm-name').value = e.firm;
-            document.getElementById('program-name').value = e.prog;
-            document.getElementById('description').value = e.desc;
-            document.getElementById('amount').value = e.amt;
-            document.getElementById('currency').value = e.curr;
-            document.querySelectorAll('input[name="islem"]').forEach(c => c.checked = e.tasks.includes(c.value));
-            editingId = id;
-            window.scrollTo({top:0, behavior:'smooth'});
-            showToast('Kayıt düzenleniyor...');
+        function toggleRow(id) {
+            if(selectedIds.has(id)) selectedIds.delete(id); else selectedIds.add(id);
+            renderTable(); checkBulk();
         }
-
-        function deleteEntry(id) {
-            if(confirm('Bu kaydı silmek istediğinize emin misiniz?')) {
-                entries = entries.filter(x=>x.id!==id);
-                selectedIds.delete(id); // Remove from selection if deleted
-                save();
-                showToast('Kayıt silindi');
+        function checkBulk() {
+            const c = selectedIds.size;
+            const p = document.getElementById('bulk-actions');
+            document.getElementById('selected-count').innerText = `${c} kayıt seçildi`;
+            if(c>0) p.classList.add('active'); else p.classList.remove('active');
+        }
+        function bulkInvoice() {
+            if(selectedIds.size===0) return;
+            if(confirm(`${selectedIds.size} kaydı faturalandırmak istiyor musunuz?`)) {
+                entries.forEach(e=>{if(selectedIds.has(e.id)) e.status='Faturalandı'});
+                selectedIds.clear(); save(); showToast('Seçilenler güncellendi');
             }
         }
-
-        function changePage(d) {
-            currentPage += d;
-            renderTable();
+        function toggleStatusOne(id) {
+            const e = entries.find(x=>x.id===id); e.status = e.status==='Bekliyor'?'Faturalandı':'Bekliyor'; save();
         }
-
-        function showToast(m, err=false) {
-            const t = document.getElementById('toast');
-            t.innerHTML = (err ? '<i class="fas fa-exclamation-triangle"></i> ' : '<i class="fas fa-check-circle"></i> ') + m;
-            t.className = err ? 'error' : '';
-            t.classList.add('show');
-            setTimeout(()=>t.classList.remove('show'),3000);
+        function editEntry(id) {
+            const e = entries.find(x=>x.id===id);
+            document.getElementById('firm-name').value=e.firm;
+            document.getElementById('program-name').value=e.prog;
+            document.getElementById('description').value=e.desc;
+            document.getElementById('material').value=e.material||'';
+            document.getElementById('amount').value=e.amt;
+            document.getElementById('currency').value=e.curr;
+            document.getElementById('deadline').value=e.deadline||'';
+            document.querySelectorAll('input[name="islem"]').forEach(c=>c.checked=e.tasks.includes(c.value));
+            editingId=id; window.scrollTo({top:0,behavior:'smooth'}); showToast('Kayıt düzenleniyor...');
+        }
+        function deleteEntry(id) {
+            if(confirm('Silinecek emin misiniz?')) { entries=entries.filter(x=>x.id!==id); selectedIds.delete(id); save(); showToast('Silindi'); }
+        }
+        function clearAllData() {
+            if(prompt("Şifre:")==="1234") { if(confirm("TÜM VERİ SİLİNECEK!")) { entries=[]; save(); showToast("Sıfırlandı",true); } } else showToast("Hatalı Şifre",true);
+        }
+        function updateDatalists() {
+            const firms=[...new Set(entries.map(e=>e.firm))], descs=[...new Set(entries.map(e=>e.desc))];
+            document.getElementById('firmList').innerHTML=firms.map(f=>`<option value="${f}">`).join('');
+            document.getElementById('descList').innerHTML=descs.map(d=>`<option value="${d}">`).join('');
+        }
+        function importCSV(input) {
+            const f=input.files[0]; if(!f)return;
+            const r=new FileReader();
+            r.onload=function(e){
+                const lines=e.target.result.split('\n').slice(1);
+                lines.forEach(l=>{
+                    if(!l.trim())return;
+                    const c=l.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                    if(c&&c.length>=6){
+                        const cl=s=>s?s.replace(/"/g,''):'';
+                        entries.push({
+                            id:Date.now()+Math.random(), date:cl(c[1]), firm:cl(c[2]), prog:cl(c[3]), desc:cl(c[4]), amt:parseFloat(c[5]), curr:cl(c[6]), status:cl(c[7])||'Bekliyor', tasks:cl(c[8])?cl(c[8]).split('|'):[],
+                            material:'', deadline:'' // CSV import default
+                        });
+                    }
+                });
+                save(); showToast('Veriler yüklendi'); input.value='';
+            }; r.readAsText(f);
+        }
+        function exportCSV() {
+            const d=getFilteredData();
+            const h=["ID","Tarih","Firma","Program","Aciklama","Tutar","ParaBirimi","Durum","Islemler"];
+            const r=d.map(e=>[e.id,e.date,`"${e.firm}"`,`"${e.prog}"`,`"${e.desc}"`,e.amt,e.curr,e.status,`"${e.tasks.join('|')}"`]);
+            const c="data:text/csv;charset=utf-8,"+h.join(",")+"\n"+r.map(row=>row.join(",")).join("\n");
+            const l=document.createElement("a"); l.href=encodeURI(c); l.download="istanbul_teknik_lazer_erp.csv";
+            document.body.appendChild(l); l.click(); document.body.removeChild(l);
+        }
+        function changePage(d){ currentPage+=d; renderTable(); }
+        function showToast(m,err=false){
+            const t=document.getElementById('toast'); t.innerHTML=(err?'<i class="fas fa-exclamation"></i> ':'<i class="fas fa-check"></i> ')+m;
+            t.style.background=err?'var(--danger)':'#1e293b'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000);
         }
     </script>
 </body>
