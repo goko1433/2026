@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>İSTANBUL TEKNİK LAZER | İş Takip</title>
+    <title>İSTANBUL TEKNİK LAZER | ERP Sistemi</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,7 +12,8 @@
         :root {
             --primary: #2563eb;
             --primary-dark: #1e40af;
-            --bg-body: #f1f5f9;
+            --secondary: #64748b;
+            --bg-body: #f8fafc;
             --bg-card: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
@@ -21,8 +22,10 @@
             --warning: #f59e0b;
             --danger: #ef4444;
             --info: #3b82f6;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --radius: 12px;
         }
 
         body.night-mode {
@@ -31,6 +34,7 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
         }
 
         body {
@@ -38,11 +42,22 @@
             background-color: var(--bg-body);
             color: var(--text-main);
             margin: 0;
-            padding-bottom: 120px;
+            padding-bottom: 140px;
             transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
         }
 
-        /* HEADER */
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        /* --- HEADER --- */
         header {
             background: var(--bg-card);
             border-bottom: 1px solid var(--border);
@@ -58,12 +73,14 @@
         }
 
         #logo {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 800;
             display: flex;
             align-items: center;
             gap: 12px;
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             letter-spacing: -0.5px;
             text-transform: uppercase;
         }
@@ -75,130 +92,166 @@
             padding: 8px 20px;
             border-radius: 99px;
             border: 1px solid var(--border);
+            font-variant-numeric: tabular-nums;
         }
         .ticker-item { font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .trend-up { color: var(--success); }
-        .trend-down { color: var(--danger); }
-
+        
         .header-actions button {
             width: 40px; height: 40px; border-radius: 8px; border: 1px solid var(--border);
             background: var(--bg-card); color: var(--text-muted); cursor: pointer; transition: 0.2s;
             font-size: 1.1rem;
         }
-        .header-actions button:hover { background: var(--bg-body); color: var(--primary); }
+        .header-actions button:hover { background: var(--bg-body); color: var(--primary); transform: scale(1.05); }
 
-        /* LAYOUT */
+        /* --- LAYOUT --- */
         main {
             max-width: 1600px;
             margin: 30px auto;
             padding: 0 30px;
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 25px;
         }
 
         .card {
             background: var(--bg-card);
-            border-radius: 16px;
+            border-radius: var(--radius);
             border: 1px solid var(--border);
             padding: 30px;
             box-shadow: var(--shadow-sm);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
+        .card:hover { box-shadow: var(--shadow-md); }
+
         .card-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border);
         }
-        .card-header h3 { margin: 0; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .card-header h3 { margin: 0; font-size: 1.25rem; display: flex; align-items: center; gap: 10px; font-weight: 700; }
 
-        /* DASHBOARD */
+        /* --- DASHBOARD STATS --- */
         .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        
         .stat-card {
-            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(37, 99, 235, 0.03) 100%);
-            border: 1px solid var(--border); border-radius: 12px; padding: 25px; position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: var(--radius); padding: 25px; position: relative;
+            overflow: hidden;
+            display: flex; flex-direction: column; justify-content: center;
         }
-        .stat-card h4 { margin: 0 0 10px 0; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-card p { margin: 0; font-size: 2rem; font-weight: 800; color: var(--text-main); }
-        .stat-icon { position: absolute; right: 20px; bottom: 20px; font-size: 3.5rem; opacity: 0.05; color: var(--text-main); }
-        .stat-sub { font-size: 0.85rem; margin-top: 8px; color: var(--success); }
+        .stat-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--primary);
+        }
+        .stat-card.champion::before { background: linear-gradient(to bottom, #f59e0b, #d97706); }
 
-        /* FORMS */
+        .stat-card h4 { margin: 0 0 10px 0; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .stat-card p { margin: 0; font-size: 2.2rem; font-weight: 800; color: var(--text-main); letter-spacing: -1px; }
+        .stat-icon { position: absolute; right: 20px; bottom: 20px; font-size: 4rem; opacity: 0.03; color: var(--text-main); transform: rotate(-10deg); }
+        .stat-sub { font-size: 0.85rem; margin-top: 5px; color: var(--success); font-weight: 500; }
+
+        /* Champion Card Special Style */
+        .champion-content { display: flex; align-items: center; gap: 15px; }
+        .champion-icon { 
+            font-size: 2rem; color: #f59e0b; background: rgba(245, 158, 11, 0.1); 
+            width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        }
+
+        /* --- FORMS & FILTERS --- */
+        .filter-bar {
+            display: flex; gap: 15px; background: var(--bg-body); padding: 15px; border-radius: var(--radius);
+            border: 1px solid var(--border); align-items: center; flex-wrap: wrap;
+        }
+        .date-input-group { display: flex; align-items: center; gap: 10px; }
+        .date-input-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .row-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
         .input-group { margin-bottom: 20px; }
-        input, select {
-            width: 100%; padding: 14px 16px; border: 1px solid var(--border);
-            border-radius: 8px; background: var(--bg-body); color: var(--text-main);
-            font-size: 1rem; outline: none; box-sizing: border-box;
-        }
         
+        input, select {
+            width: 100%; padding: 12px 16px; border: 1px solid var(--border);
+            border-radius: 8px; background: var(--bg-body); color: var(--text-main);
+            font-size: 0.95rem; outline: none; box-sizing: border-box; transition: 0.2s;
+        }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); background: var(--bg-card); }
+
         /* CHIPS */
-        .chip-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px; }
+        .chip-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
         .chip-checkbox { display: none; }
         .chip-label {
-            padding: 8px 18px; background: var(--bg-body); border: 1px solid var(--border);
+            padding: 8px 16px; background: var(--bg-body); border: 1px solid var(--border);
             border-radius: 50px; cursor: pointer; font-weight: 500; color: var(--text-muted);
-            transition: 0.2s; display: flex; align-items: center; gap: 8px; user-select: none;
+            transition: 0.2s; display: flex; align-items: center; gap: 8px; user-select: none; font-size: 0.9rem;
         }
-        .chip-checkbox:checked + .chip-label { background: var(--primary); color: white; border-color: var(--primary); }
+        .chip-label:hover { background: var(--border); }
+        .chip-checkbox:checked + .chip-label { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3); }
 
         /* BUTTONS */
         .btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; font-size: 0.95rem; }
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border); }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
         .form-actions { display: flex; gap: 10px; margin-top: 25px; }
         .ml-auto { margin-left: auto; display: flex; gap: 10px; }
 
         /* TABLE */
-        .table-responsive { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+        .table-responsive { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
         table { width: 100%; border-collapse: collapse; min-width: 1000px; }
-        th { background: var(--bg-body); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; padding: 15px; text-align: left; }
-        td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-        .status-pill { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-flex; gap: 5px; align-items: center; }
-        .status-pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
-        .status-done { background: rgba(16, 185, 129, 0.1); color: var(--success); }
-        .btn-icon { width: 32px; height: 32px; border-radius: 6px; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        th { background: var(--bg-body); color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; padding: 16px; text-align: left; letter-spacing: 0.5px; font-weight: 700; }
+        td { padding: 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tr:hover { background-color: rgba(0,0,0,0.02); }
         
+        .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-flex; gap: 6px; align-items: center; cursor: pointer; user-select: none; }
+        .status-pending { background: rgba(245, 158, 11, 0.15); color: #d97706; }
+        .status-done { background: rgba(16, 185, 129, 0.15); color: #059669; }
+
+        .btn-icon { width: 34px; height: 34px; border-radius: 8px; border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; background: transparent; }
+        .btn-icon:hover { background: rgba(0,0,0,0.05); }
+
         .bulk-actions {
-            background: rgba(37, 99, 235, 0.05); padding: 10px; border-radius: 8px; 
-            margin-bottom: 15px; display: none; align-items: center; gap: 15px; border: 1px solid rgba(37, 99, 235, 0.2);
+            background: rgba(37, 99, 235, 0.05); padding: 12px 20px; border-radius: var(--radius);
+            margin-bottom: 20px; display: none; align-items: center; gap: 20px; border: 1px solid rgba(37, 99, 235, 0.2);
+            animation: fadeInUp 0.3s ease-out;
         }
         .bulk-actions.active { display: flex; }
 
-        /* FOOTER */
+        /* STICKY FOOTER */
         #sticky-footer {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             width: 90%; max-width: 1540px; background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(12px); color: white; padding: 10px 30px;
-            border-radius: 16px; display: flex; justify-content: space-between;
+            backdrop-filter: blur(12px); color: white; padding: 12px 30px;
+            border-radius: 20px; display: flex; justify-content: space-between;
             align-items: center; box-shadow: var(--shadow-lg); z-index: 999;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .footer-left { display: flex; align-items: center; gap: 15px; }
-        .footer-total-main { font-size: 2rem; font-weight: 800; color: var(--success); font-family: 'Roboto', monospace; }
-        .footer-right { display: flex; gap: 20px; background: rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 8px; }
+        .footer-left { display: flex; align-items: center; gap: 20px; }
+        .footer-total-main { font-size: 2.2rem; font-weight: 800; color: var(--success); font-family: 'Roboto', monospace; letter-spacing: -1px; text-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+        .footer-right { display: flex; gap: 25px; background: rgba(255,255,255,0.1); padding: 10px 25px; border-radius: 12px; }
         .mini-stat { display: flex; flex-direction: column; align-items: flex-end; }
-        .mini-stat span { font-size: 0.7rem; opacity: 0.6; }
-        .mini-stat strong { font-family: 'Roboto', monospace; }
+        .mini-stat span { font-size: 0.7rem; opacity: 0.6; font-weight: 600; letter-spacing: 0.5px; }
+        .mini-stat strong { font-family: 'Roboto', monospace; font-size: 1.1rem; }
 
         /* CHARTS */
-        .charts-container { display: flex; gap: 30px; height: 400px; }
-        .chart-box { flex: 1; position: relative; }
-        
+        .charts-row { display: flex; gap: 25px; }
+        .chart-box { flex: 1; height: 350px; position: relative; }
+        .chart-box.full { width: 100%; height: 300px; }
+
         /* TOAST */
         #toast {
-            position: fixed; top: 20px; right: 20px; background: #333; color: #fff;
-            padding: 15px 25px; border-radius: 8px; z-index: 2000; transform: translateX(120%);
-            transition: 0.3s; box-shadow: var(--shadow-lg);
+            position: fixed; top: 25px; right: 25px; background: #1e293b; color: #fff;
+            padding: 16px 24px; border-radius: 12px; z-index: 2000; transform: translateX(150%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--shadow-lg); font-weight: 500; display: flex; align-items: center; gap: 12px;
         }
         #toast.show { transform: translateX(0); }
+        #toast.error { background: var(--danger); }
+        #toast i { font-size: 1.2rem; }
 
         @media (max-width: 1024px) {
-            .dashboard-grid, .charts-container { grid-template-columns: 1fr; flex-direction: column; height: auto; }
-            .chart-box { height: 300px; }
-            #sticky-footer { flex-direction: column; gap: 10px; width: 85%; padding: 15px; }
+            .dashboard-grid, .charts-row, .row, .row-3 { grid-template-columns: 1fr; flex-direction: column; }
+            #sticky-footer { flex-direction: column; gap: 15px; width: 85%; padding: 20px; bottom: 10px; }
             .footer-right { width: 100%; justify-content: space-between; }
         }
     </style>
@@ -206,70 +259,82 @@
 <body>
 
     <header>
-        <div id="logo"><i class="fas fa-laser"></i> İSTANBUL TEKNİK LAZER</div>
+        <div id="logo"><i class="fas fa-layer-group"></i> İSTANBUL TEKNİK LAZER</div>
+        
         <div class="live-ticker">
             <div class="ticker-item"><i class="fas fa-dollar-sign" style="color:#f59e0b"></i> <span id="live-usd">00.00</span></div>
-            <div style="width:1px; background:#ddd; height:15px; margin:auto 0;"></div>
+            <div style="width:1px; background:#e2e8f0; height:20px; margin:auto 0;"></div>
             <div class="ticker-item"><i class="fas fa-euro-sign" style="color:#3b82f6"></i> <span id="live-eur">00.00</span></div>
         </div>
+
         <div class="header-actions">
-            <button id="toggle-mode"><i class="fas fa-moon"></i></button>
-            <button onclick="window.open('https://google.com')"><i class="fab fa-google"></i></button>
+            <button id="toggle-mode" title="Gece/Gündüz Modu"><i class="fas fa-moon"></i></button>
+            <button onclick="window.open('https://google.com')" title="Google"><i class="fab fa-google"></i></button>
         </div>
     </header>
 
     <main>
         <!-- İstatistikler -->
-        <div class="card">
+        <div class="card animate-in">
             <div class="dashboard-grid">
                 <div class="stat-card">
                     <h4>Toplam İş Kaydı</h4>
                     <p id="stat-total-jobs">0</p>
+                    <div class="stat-sub"><i class="fas fa-filter"></i> Seçilen Tarih Aralığında</div>
                     <i class="fas fa-folder-open stat-icon"></i>
                 </div>
                 <div class="stat-card">
-                    <h4>Bu Ay En Çok İş (Adet)</h4>
+                    <h4>Bu Ayın Lideri (Adet)</h4>
                     <p id="stat-top-count">-</p>
-                    <div class="stat-sub">Adet bazında lider</div>
-                    <i class="fas fa-trophy stat-icon"></i>
+                    <div class="stat-sub">En çok iş gelen firma</div>
+                    <i class="fas fa-medal stat-icon"></i>
                 </div>
-                <div class="stat-card">
-                    <h4>Bu Ay Ciro Şampiyonu</h4>
-                    <p id="stat-top-value">-</p>
-                    <div class="stat-sub">TL Karşılığı (Canlı)</div>
-                    <i class="fas fa-chart-line stat-icon"></i>
+                <!-- Ciro Şampiyonu (Title yok, Taç var) -->
+                <div class="stat-card champion">
+                    <div class="champion-content">
+                        <div class="champion-icon"><i class="fas fa-crown"></i></div>
+                        <div>
+                            <div style="font-size:0.85rem; color:var(--text-muted); font-weight:600; text-transform:uppercase;">CİRO LİDERİ</div>
+                            <div id="stat-top-firm" style="font-size:1.4rem; font-weight:800; color:var(--text-main); margin-top:2px;">-</div>
+                            <div id="stat-top-value" style="font-size:1.1rem; color:var(--success); font-weight:700;">- ₺</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-trophy stat-icon"></i>
                 </div>
             </div>
         </div>
 
-        <!-- Form -->
-        <div class="card">
+        <!-- İş Giriş Formu -->
+        <div class="card animate-in delay-1">
             <div class="card-header">
                 <h3><i class="fas fa-pen-to-square"></i> Yeni İş Girişi</h3>
             </div>
+            
             <div class="row">
                 <div class="input-group">
-                    <label>Firma Bilgisi</label>
-                    <input type="text" id="firm-name" placeholder="Firma seçin veya yazın..." list="firmList">
+                    <label style="font-size:0.9rem; font-weight:600; display:block; margin-bottom:6px;">Firma</label>
+                    <input type="text" id="firm-name" placeholder="Firma Seçin veya Yazın..." list="firmList">
                     <datalist id="firmList"></datalist>
                 </div>
                 <div class="input-group">
-                    <label>Proje / Program Adı</label>
-                    <input type="text" id="program-name" placeholder="Parça Kodu veya Proje Adı">
+                    <label style="font-size:0.9rem; font-weight:600; display:block; margin-bottom:6px;">Program / Parça Adı</label>
+                    <input type="text" id="program-name" placeholder="Benzersiz Program Adı Giriniz">
                 </div>
             </div>
+            
             <div class="input-group">
-                <label>Yapılan İşin Tanımı</label>
-                <input type="text" id="description" placeholder="Açıklama giriniz..." list="descList">
+                <label style="font-size:0.9rem; font-weight:600; display:block; margin-bottom:6px;">Yapılan İşin Açıklaması</label>
+                <input type="text" id="description" placeholder="Örn: 10mm DKP Sac Kesim" list="descList">
                 <datalist id="descList"></datalist>
             </div>
+
             <div class="row-3">
                 <div class="input-group">
-                    <label>Tutar</label>
+                    <label style="font-size:0.9rem; font-weight:600; display:block; margin-bottom:6px;">Tutar</label>
                     <input type="number" id="amount" placeholder="0.00" step="0.01">
                 </div>
                 <div class="input-group">
-                    <label>Para Birimi</label>
+                    <label style="font-size:0.9rem; font-weight:600; display:block; margin-bottom:6px;">Para Birimi</label>
                     <select id="currency">
                         <option value="TL">TL (₺)</option>
                         <option value="USD">USD ($)</option>
@@ -277,16 +342,19 @@
                     </select>
                 </div>
             </div>
+
             <div class="input-group">
-                <label>Uygulanan İşlemler</label>
+                <label style="font-size:0.9rem; font-weight:600; display:block; margin-bottom:6px;">Uygulanan İşlemler</label>
                 <div class="chip-container">
                     <input type="checkbox" id="c1" value="Lazer" class="chip-checkbox" name="islem"><label for="c1" class="chip-label">Lazer Kesim</label>
                     <input type="checkbox" id="c2" value="Büküm" class="chip-checkbox" name="islem"><label for="c2" class="chip-label">Büküm</label>
                     <input type="checkbox" id="c3" value="Kaynak" class="chip-checkbox" name="islem"><label for="c3" class="chip-label">Kaynak</label>
                     <input type="checkbox" id="c4" value="Makas" class="chip-checkbox" name="islem"><label for="c4" class="chip-label">Makas</label>
                     <input type="checkbox" id="c5" value="Montaj" class="chip-checkbox" name="islem"><label for="c5" class="chip-label">Montaj</label>
+                    <input type="checkbox" id="c6" value="Boya" class="chip-checkbox" name="islem"><label for="c6" class="chip-label">Boya</label>
                 </div>
             </div>
+
             <div class="form-actions">
                 <button class="btn btn-primary" onclick="addData()"><i class="fas fa-save"></i> Kaydet</button>
                 <button class="btn btn-secondary" onclick="addData(true)"><i class="fas fa-check-double"></i> Kaydet ve Yeni</button>
@@ -299,58 +367,89 @@
             </div>
         </div>
 
-        <!-- Tablo -->
-        <div class="card">
+        <!-- Liste ve Filtreler -->
+        <div class="card animate-in delay-2">
             <div class="card-header">
-                <h3><i class="fas fa-list"></i> İş Listesi</h3>
-                <input type="text" id="search" placeholder="Ara..." oninput="renderTable()" style="width:250px;">
+                <h3><i class="fas fa-list-check"></i> İş Listesi</h3>
             </div>
+            
+            <!-- Tarih ve Arama Filtresi -->
+            <div class="filter-bar">
+                <div class="date-input-group">
+                    <label>Başlangıç:</label>
+                    <input type="date" id="startDate" onchange="renderTable(); updateAllUI()">
+                </div>
+                <div class="date-input-group">
+                    <label>Bitiş:</label>
+                    <input type="date" id="endDate" onchange="renderTable(); updateAllUI()">
+                </div>
+                <div style="flex-grow:1; display:flex; justify-content:flex-end;">
+                    <input type="text" id="search" placeholder="Firma veya Proje Ara..." oninput="renderTable()" style="width:250px;">
+                </div>
+            </div>
+            <br>
 
-            <!-- Toplu İşlem Paneli -->
+            <!-- Toplu İşlem -->
             <div id="bulk-actions" class="bulk-actions">
-                <i class="fas fa-check-square" style="color:var(--primary)"></i>
-                <span id="selected-count" style="font-weight:600">0 kayıt seçildi</span>
-                <button class="btn btn-success" style="padding:6px 15px; font-size:0.85rem;" onclick="bulkInvoice()"><i class="fas fa-file-invoice"></i> Seçilenleri Faturalandır</button>
+                <i class="fas fa-check-double" style="color:var(--primary); font-size:1.2rem;"></i>
+                <span id="selected-count" style="font-weight:700; color:var(--text-main)">0 kayıt seçildi</span>
+                <span style="color:var(--text-muted); font-size:0.9rem;">(Tüm sayfalardaki filtrelenmiş veriler)</span>
+                <button class="btn btn-success" style="margin-left:auto" onclick="bulkInvoice()"><i class="fas fa-file-invoice-dollar"></i> Seçilenleri Faturalandır</button>
             </div>
 
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
-                            <th style="width:40px;"><input type="checkbox" id="select-all" onclick="toggleSelectAll()"></th>
+                            <th style="width:40px; text-align:center;"><input type="checkbox" id="select-all" onclick="toggleSelectAll()" style="width:18px; height:18px; cursor:pointer;"></th>
                             <th>Tarih</th>
-                            <th>Firma</th>
+                            <th>Firma & Proje</th>
                             <th>Açıklama</th>
                             <th>Tutar</th>
                             <th>TL Karşılığı</th>
                             <th>Durum</th>
-                            <th style="text-align:right;">İşlem</th>
+                            <th style="text-align:right;">Yönet</th>
                         </tr>
                     </thead>
                     <tbody id="table-body"></tbody>
                 </table>
             </div>
+
             <div style="margin-top:20px; display:flex; justify-content:center; gap:10px;">
                 <button class="btn-icon" onclick="changePage(-1)"><i class="fas fa-chevron-left"></i></button>
-                <span id="page-indicator" style="align-self:center; font-weight:600; color:var(--text-muted)">Sayfa 1</span>
+                <span id="page-indicator" style="align-self:center; font-weight:600; color:var(--text-muted); font-variant-numeric: tabular-nums;">Sayfa 1</span>
                 <button class="btn-icon" onclick="changePage(1)"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
 
         <!-- Grafikler -->
-        <div class="card">
-            <div class="card-header"><h3><i class="fas fa-chart-pie"></i> Performans & Analiz</h3></div>
-            <div class="charts-container">
-                <div class="chart-box"><canvas id="chart-bar"></canvas></div>
-                <div class="chart-box"><canvas id="chart-pie"></canvas></div>
+        <div class="card animate-in delay-3">
+            <div class="card-header"><h3><i class="fas fa-chart-line"></i> Performans & Finansal Analiz</h3></div>
+            
+            <div class="charts-row" style="margin-bottom:30px;">
+                <div class="chart-box">
+                    <h5 style="text-align:center; color:var(--text-muted); margin-bottom:10px;">Firma Performansı (Ciro)</h5>
+                    <canvas id="chart-bar"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h5 style="text-align:center; color:var(--text-muted); margin-bottom:10px;">Ciro Dağılımı</h5>
+                    <canvas id="chart-pie"></canvas>
+                </div>
+            </div>
+            
+            <hr style="border:0; border-top:1px solid var(--border); margin:20px 0;">
+            
+            <div class="chart-box full">
+                <h5 style="text-align:center; color:var(--text-muted); margin-bottom:10px;">Günlük Ciro Akışı (Zaman Çizelgesi)</h5>
+                <canvas id="chart-line"></canvas>
             </div>
         </div>
     </main>
 
-    <!-- Sticky Footer (No Text Label as requested) -->
+    <!-- Footer -->
     <div id="sticky-footer">
         <div class="footer-left">
-            <i class="fas fa-wallet" style="font-size:2.2rem; color:#10b981;"></i>
+            <i class="fas fa-wallet" style="font-size:2.5rem; color:#10b981;"></i>
             <div class="footer-total-main" id="grand-total-tl">0,00 ₺</div>
         </div>
         <div class="footer-right">
@@ -362,22 +461,25 @@
         </div>
     </div>
 
-    <div id="toast"></div>
+    <!-- Toast -->
+    <div id="toast"><i class="fas fa-check-circle"></i> <span>İşlem Başarılı</span></div>
 
     <script>
-        // --- GLOBAL VARIABLES ---
+        // --- STATE & CONFIG ---
         let entries = JSON.parse(localStorage.getItem('entries')) || [];
         let rates = { USD: 30.00, EUR: 33.00, lastUpdate: 0 };
         let currentPage = 1;
         const perPage = 10;
         let editingId = null;
+        let selectedIds = new Set(); // Global seçim için Set
 
-        // --- INIT ---
+        // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
             initWebSocket();
-            renderTable();
+            setInitialDates();
             updateAllUI();
             
+            // Theme Init
             if(localStorage.getItem('nightMode') === 'true') document.body.classList.add('night-mode');
             document.getElementById('toggle-mode').onclick = () => {
                 document.body.classList.toggle('night-mode');
@@ -386,15 +488,13 @@
             };
         });
 
-        function updateAllUI() {
-            updateFooterTotals();
-            updateDashboard();
-            updateCharts();
-            updateDatalists();
-            updateTableLiveValues();
+        function setInitialDates() {
+            // Varsayılan olarak bu ayın başı ve sonu seçili gelebilir veya boş bırakılabilir.
+            // İsteğe bağlı, şu an boş bırakıyorum ki tüm veriler görünsün.
+            // document.getElementById('startDate').valueAsDate = new Date();
         }
 
-        // --- WEBSOCKET ---
+        // --- WEBSOCKET (BINANCE) ---
         function initWebSocket() {
             const ws = new WebSocket("wss://stream.binance.com:9443/stream?streams=usdttry@trade/eurusdt@trade");
             let rawUsd = 0, rawEurUsd = 0;
@@ -423,17 +523,57 @@
             };
         }
 
-        // --- DATA OPERATIONS ---
+        // --- CORE FUNCTIONS ---
+        function getFilteredData() {
+            const search = document.getElementById('search').value.toLowerCase();
+            const startStr = document.getElementById('startDate').value;
+            const endStr = document.getElementById('endDate').value;
+            
+            const startDate = startStr ? new Date(startStr) : null;
+            const endDate = endStr ? new Date(endStr) : null;
+            if(startDate) startDate.setHours(0,0,0,0);
+            if(endDate) endDate.setHours(23,59,59,999);
+
+            return entries.filter(e => {
+                // Parse DD.MM.YYYY to Date Object
+                const parts = e.date.split('.');
+                const entryDate = new Date(parts[2], parts[1]-1, parts[0]);
+
+                const matchesSearch = e.firm.toLowerCase().includes(search) || (e.prog && e.prog.toLowerCase().includes(search));
+                const matchesStart = startDate ? entryDate >= startDate : true;
+                const matchesEnd = endDate ? entryDate <= endDate : true;
+
+                return matchesSearch && matchesStart && matchesEnd;
+            });
+        }
+
+        function updateAllUI() {
+            renderTable();
+            updateFooterTotals();
+            updateDashboard();
+            updateCharts();
+            updateDatalists();
+            checkBulk(); // Update bulk UI based on selection
+        }
+
         function addData(andNew = false) {
             const firm = document.getElementById('firm-name').value;
+            const prog = document.getElementById('program-name').value;
             const amt = parseFloat(document.getElementById('amount').value);
+            
             if(!firm || !amt) { showToast('Firma ve Tutar zorunludur!', true); return; }
+
+            // DUPLICATE CHECK (Program Name)
+            if(prog && !editingId) {
+                const exists = entries.some(e => e.prog && e.prog.toLowerCase() === prog.toLowerCase());
+                if(exists) { showToast('Bu Program Adı zaten kayıtlı!', true); return; }
+            }
 
             const entry = {
                 id: editingId || Date.now(),
                 date: new Date().toLocaleDateString('tr-TR'),
                 firm: firm,
-                prog: document.getElementById('program-name').value,
+                prog: prog,
                 desc: document.getElementById('description').value,
                 amt: amt,
                 curr: document.getElementById('currency').value,
@@ -444,10 +584,10 @@
             if(editingId) {
                 entries = entries.map(e => e.id === editingId ? entry : e);
                 editingId = null;
-                showToast('Kayıt güncellendi');
+                showToast('Kayıt başarıyla güncellendi');
             } else {
                 entries.unshift(entry);
-                showToast('Kayıt eklendi');
+                showToast('Yeni iş başarıyla eklendi');
             }
             save();
             if(!andNew) clearForm();
@@ -455,7 +595,7 @@
 
         function clearForm() {
             document.querySelectorAll('input').forEach(i => {
-                if(i.type!='checkbox' && i.type!='file') i.value='';
+                if(i.type!='checkbox' && i.type!='file' && i.type!='date') i.value='';
                 if(i.type=='checkbox') i.checked=false;
             });
             editingId = null;
@@ -463,21 +603,19 @@
 
         function save() {
             localStorage.setItem('entries', JSON.stringify(entries));
-            renderTable();
             updateAllUI();
         }
 
-        // --- IMPORT CSV (FIXED) ---
+        // --- IMPORT / EXPORT ---
         function importCSV(input) {
             const file = input.files[0];
             if(!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 const text = e.target.result;
-                const lines = text.split('\n').slice(1); // Skip header
+                const lines = text.split('\n').slice(1);
                 lines.forEach(line => {
                     if(!line.trim()) return;
-                    // Robust split considering quotes
                     const cols = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
                     if(cols && cols.length >= 6) {
                         const clean = (s) => s ? s.replace(/"/g, '') : '';
@@ -494,89 +632,122 @@
                         });
                     }
                 });
-                save(); // Trigger UI updates
-                showToast('Veriler yüklendi ve grafikler güncellendi!');
-                input.value = ''; // Reset input
+                save();
+                showToast('Veriler başarıyla içe aktarıldı');
+                input.value = '';
             };
             reader.readAsText(file);
         }
 
         function exportCSV() {
+            const data = getFilteredData(); // Export only filtered
             const header = ["ID","Tarih","Firma","Program","Aciklama","Tutar","ParaBirimi","Durum","Islemler"];
-            const rows = entries.map(e => [
+            const rows = data.map(e => [
                 e.id, e.date, `"${e.firm}"`, `"${e.prog}"`, `"${e.desc}"`, e.amt, e.curr, e.status, `"${e.tasks.join('|')}"`
             ]);
             const csv = "data:text/csv;charset=utf-8," + header.join(",") + "\n" + rows.map(r=>r.join(",")).join("\n");
             const link = document.createElement("a");
             link.href = encodeURI(csv);
-            link.download = "istanbul_teknik_lazer_db.csv";
+            link.download = "istanbul_teknik_lazer_data.csv";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        // --- DASHBOARD & CHARTS ---
-        function updateDashboard() {
-            document.getElementById('stat-total-jobs').innerText = entries.length;
-            
-            const now = new Date();
-            const currentMonth = entries.filter(e => {
-                const parts = e.date.split('.');
-                const d = new Date(parts[2], parts[1]-1, parts[0]);
-                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-            });
+        // --- PASSWORD PROTECTED RESET ---
+        function clearAllData() {
+            const pwd = prompt("Sıfırlamak için şifreyi giriniz:");
+            if(pwd === "1234") {
+                if(confirm("DİKKAT! Tüm veriler silinecek. Emin misiniz?")) {
+                    entries = [];
+                    save();
+                    showToast('Sistem başarıyla sıfırlandı');
+                }
+            } else if(pwd !== null) {
+                showToast('Hatalı Şifre!', true);
+            }
+        }
 
-            if(currentMonth.length > 0) {
-                // Count
+        // --- DASHBOARD UPDATES ---
+        function updateDashboard() {
+            const data = getFilteredData();
+            document.getElementById('stat-total-jobs').innerText = data.length;
+
+            if(data.length > 0) {
+                // Count Leader
                 const counts = {};
-                currentMonth.forEach(e => counts[e.firm] = (counts[e.firm]||0)+1);
+                data.forEach(e => counts[e.firm] = (counts[e.firm]||0)+1);
                 const topC = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
                 document.getElementById('stat-top-count').innerText = `${topC[0]} (${topC[1]})`;
 
-                // Value (Converted)
+                // Revenue Leader (Convert to TL)
                 const values = {};
-                currentMonth.forEach(e => {
+                data.forEach(e => {
                     let v = e.amt;
                     if(e.curr==='USD') v*=rates.USD;
                     if(e.curr==='EUR') v*=rates.EUR;
                     values[e.firm] = (values[e.firm]||0)+v;
                 });
                 const topV = Object.entries(values).sort((a,b)=>b[1]-a[1])[0];
-                document.getElementById('stat-top-value').innerHTML = `${topV[0]} <br><span style="font-size:1rem;color:var(--success)">${topV[1].toLocaleString('tr-TR',{maximumFractionDigits:0})} ₺</span>`;
+                
+                document.getElementById('stat-top-firm').innerText = topV[0];
+                document.getElementById('stat-top-value').innerText = topV[1].toLocaleString('tr-TR',{maximumFractionDigits:0}) + " ₺";
             } else {
                 document.getElementById('stat-top-count').innerText = '-';
-                document.getElementById('stat-top-value').innerText = '-';
+                document.getElementById('stat-top-firm').innerText = '-';
+                document.getElementById('stat-top-value').innerText = '- ₺';
             }
         }
 
+        // --- CHART UPDATES ---
+        let chartBar, chartPie, chartLine;
         function updateCharts() {
+            const data = getFilteredData();
             const firmData = {};
-            entries.forEach(e => {
+            const dailyData = {};
+
+            data.forEach(e => {
+                // Convert to TL
                 let v = e.amt;
                 if(e.curr==='USD') v*=rates.USD;
                 if(e.curr==='EUR') v*=rates.EUR;
+                
+                // For Bar/Pie
                 firmData[e.firm] = (firmData[e.firm]||0)+v;
+
+                // For Line (Date parsing for sorting)
+                const p = e.date.split('.');
+                const isoDate = `${p[2]}-${p[1]}-${p[0]}`; // YYYY-MM-DD for sorting
+                dailyData[isoDate] = (dailyData[isoDate]||0)+v;
             });
+
+            const sortedFirms = Object.entries(firmData).sort((a,b)=>b[1]-a[1]);
+            const top10 = sortedFirms.slice(0,10);
             
-            // Sort firms by value
-            const sorted = Object.entries(firmData).sort((a,b)=>b[1]-a[1]);
-            
-            // Bar Data (Top 10)
-            const top10 = sorted.slice(0, 10);
-            
-            // Pie Data (Top 5 + Others)
-            let pieLabels = [], pieData = [];
-            sorted.slice(0, 5).forEach(x => { pieLabels.push(x[0]); pieData.push(x[1]); });
-            if(sorted.length > 5) {
+            // Pie Data
+            let pieLabels = [], pieValues = [];
+            sortedFirms.slice(0, 5).forEach(x => { pieLabels.push(x[0]); pieValues.push(x[1]); });
+            if(sortedFirms.length > 5) {
                 pieLabels.push('Diğerleri');
-                pieData.push(sorted.slice(5).reduce((acc, curr)=>acc+curr[1], 0));
+                pieValues.push(sortedFirms.slice(5).reduce((acc,c)=>acc+c[1],0));
             }
+
+            // Line Data (Sorted by Date)
+            const sortedDates = Object.keys(dailyData).sort();
+            const lineValues = sortedDates.map(d => dailyData[d]);
+            // Format labels back to DD.MM
+            const lineLabels = sortedDates.map(d => {
+                const p = d.split('-');
+                return `${p[2]}.${p[1]}`;
+            });
 
             const isDark = document.body.classList.contains('night-mode');
             const color = isDark ? '#94a3b8' : '#64748b';
+            const gridColor = isDark ? '#334155' : '#e2e8f0';
 
-            if(window.barChart) window.barChart.destroy();
-            window.barChart = new Chart(document.getElementById('chart-bar'), {
+            // 1. Bar Chart
+            if(chartBar) chartBar.destroy();
+            chartBar = new Chart(document.getElementById('chart-bar'), {
                 type: 'bar',
                 data: {
                     labels: top10.map(x=>x[0]),
@@ -584,30 +755,51 @@
                 },
                 options: { 
                     responsive: true, maintainAspectRatio: false,
-                    scales: { x: {ticks:{color}}, y: {ticks:{color}, grid:{color: isDark?'#334155':'#e2e8f0'}} },
-                    plugins: { legend: {display:false} } 
+                    scales: { x: {ticks:{color}, grid:{display:false}}, y: {ticks:{color}, grid:{color:gridColor}} },
+                    plugins: { legend: {display:false} }
                 }
             });
 
-            if(window.pieChart) window.pieChart.destroy();
-            window.pieChart = new Chart(document.getElementById('chart-pie'), {
+            // 2. Pie Chart
+            if(chartPie) chartPie.destroy();
+            chartPie = new Chart(document.getElementById('chart-pie'), {
                 type: 'doughnut',
                 data: {
                     labels: pieLabels,
-                    datasets: [{ data: pieData, backgroundColor: ['#2563eb','#3b82f6','#60a5fa','#93c5fd','#10b981','#f59e0b'] }]
+                    datasets: [{ data: pieValues, backgroundColor: ['#2563eb','#3b82f6','#60a5fa','#93c5fd','#10b981','#f59e0b'], borderWidth:0 }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {position:'right', labels:{color}} } }
             });
+
+            // 3. Line Chart
+            if(chartLine) chartLine.destroy();
+            chartLine = new Chart(document.getElementById('chart-line'), {
+                type: 'line',
+                data: {
+                    labels: lineLabels,
+                    datasets: [{
+                        label: 'Günlük Ciro',
+                        data: lineValues,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { x: {ticks:{color}, grid:{display:false}}, y: {ticks:{color}, grid:{color:gridColor}} },
+                    plugins: { legend: {display:false} }
+                }
+            });
         }
 
-        // --- TABLE & BULK ACTIONS ---
+        // --- TABLE RENDER & GLOBAL SELECT ---
         function renderTable() {
             const tbody = document.getElementById('table-body');
             tbody.innerHTML = '';
             
-            const search = document.getElementById('search').value.toLowerCase();
-            const filtered = entries.filter(e => e.firm.toLowerCase().includes(search) || (e.prog && e.prog.toLowerCase().includes(search)));
-            
+            const filtered = getFilteredData();
             const totalPages = Math.ceil(filtered.length / perPage) || 1;
             if(currentPage > totalPages) currentPage = 1;
             document.getElementById('page-indicator').innerText = `Sayfa ${currentPage} / ${totalPages}`;
@@ -616,16 +808,18 @@
             const pageData = filtered.slice(start, start+perPage);
 
             pageData.forEach(e => {
-                const statusClass = e.status==='Faturalandı'?'status-done':'status-pending';
+                const isChecked = selectedIds.has(e.id) ? 'checked' : '';
+                const statusClass = e.status==='Faturalandı' ? 'status-done' : 'status-pending';
+                
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><input type="checkbox" class="row-chk" value="${e.id}" onchange="checkBulk()"></td>
+                    <td style="text-align:center;"><input type="checkbox" class="row-chk" value="${e.id}" ${isChecked} onchange="toggleRow(${e.id})"></td>
                     <td>${e.date}</td>
-                    <td><b>${e.firm}</b><br><small style="color:var(--text-muted)">${e.prog||''}</small></td>
-                    <td>${e.desc}<br><small>${e.tasks.join(', ')}</small></td>
+                    <td><b>${e.firm}</b><br><small style="color:var(--text-muted);">${e.prog||''}</small></td>
+                    <td>${e.desc} <br> <small style="opacity:0.7">${e.tasks.join(', ')}</small></td>
                     <td style="font-weight:600; color:${e.curr=='USD'?'#10b981':e.curr=='EUR'?'#3b82f6':'inherit'}">${e.amt.toLocaleString()} ${e.curr}</td>
                     <td class="live-calc" data-amt="${e.amt}" data-curr="${e.curr}">-- ₺</td>
-                    <td><span class="status-pill ${statusClass}" onclick="toggleOne(${e.id})">${e.status}</span></td>
+                    <td><span class="status-pill ${statusClass}" onclick="toggleStatusOne(${e.id})">${e.status}</span></td>
                     <td style="text-align:right;">
                         <button class="btn-icon" onclick="editEntry(${e.id})"><i class="fas fa-pen"></i></button>
                         <button class="btn-icon" onclick="deleteEntry(${e.id})" style="color:var(--danger)"><i class="fas fa-trash"></i></button>
@@ -634,33 +828,52 @@
                 tbody.appendChild(tr);
             });
             updateTableLiveValues();
+            
+            // Master checkbox state
+            const allVisibleSelected = pageData.length > 0 && pageData.every(e => selectedIds.has(e.id));
+            document.getElementById('select-all').checked = allVisibleSelected;
         }
 
         function toggleSelectAll() {
             const master = document.getElementById('select-all').checked;
-            document.querySelectorAll('.row-chk').forEach(c => c.checked = master);
+            const filtered = getFilteredData(); // Tüm filtrelenmiş veriyi al
+            
+            if(master) {
+                filtered.forEach(e => selectedIds.add(e.id));
+            } else {
+                selectedIds.clear();
+            }
+            renderTable();
+            checkBulk();
+        }
+
+        function toggleRow(id) {
+            if(selectedIds.has(id)) selectedIds.delete(id);
+            else selectedIds.add(id);
+            renderTable(); // Update master checkbox visual
             checkBulk();
         }
 
         function checkBulk() {
-            const count = document.querySelectorAll('.row-chk:checked').length;
+            const count = selectedIds.size;
             const panel = document.getElementById('bulk-actions');
             document.getElementById('selected-count').innerText = `${count} kayıt seçildi`;
             if(count > 0) panel.classList.add('active'); else panel.classList.remove('active');
         }
 
         function bulkInvoice() {
-            const ids = Array.from(document.querySelectorAll('.row-chk:checked')).map(c => parseFloat(c.value));
-            entries.forEach(e => {
-                if(ids.includes(e.id)) e.status = 'Faturalandı';
-            });
-            save();
-            document.getElementById('select-all').checked = false;
-            checkBulk();
-            showToast(`${ids.length} kayıt faturalandı olarak işaretlendi.`);
+            if(selectedIds.size === 0) return;
+            if(confirm(`${selectedIds.size} adet kaydı faturalandırmak istiyor musunuz?`)) {
+                entries.forEach(e => {
+                    if(selectedIds.has(e.id)) e.status = 'Faturalandı';
+                });
+                selectedIds.clear();
+                save();
+                showToast('Seçilen kayıtlar güncellendi');
+            }
         }
 
-        function toggleOne(id) {
+        function toggleStatusOne(id) {
             const e = entries.find(x=>x.id===id);
             e.status = e.status==='Bekliyor'?'Faturalandı':'Bekliyor';
             save();
@@ -668,8 +881,9 @@
 
         // --- HELPERS ---
         function updateFooterTotals() {
+            const data = getFilteredData(); // Use filtered data for totals
             let sTL=0, sUSD=0, sEUR=0;
-            entries.forEach(e => {
+            data.forEach(e => {
                 const v = parseFloat(e.amt)||0;
                 if(e.curr==='TL') sTL+=v;
                 if(e.curr==='USD') sUSD+=v;
@@ -678,6 +892,7 @@
             document.getElementById('sum-tl').innerText = '₺'+sTL.toLocaleString('tr-TR');
             document.getElementById('sum-usd').innerText = '$'+sUSD.toLocaleString('en-US');
             document.getElementById('sum-eur').innerText = '€'+sEUR.toLocaleString('de-DE');
+            
             const total = sTL + (sUSD*rates.USD) + (sEUR*rates.EUR);
             document.getElementById('grand-total-tl').innerText = total.toLocaleString('tr-TR',{minimumFractionDigits:2}) + ' ₺';
         }
@@ -692,7 +907,7 @@
                 td.innerText = v.toLocaleString('tr-TR',{maximumFractionDigits:2}) + ' ₺';
             });
         }
-        
+
         function updateDatalists() {
             const firms = [...new Set(entries.map(e=>e.firm))];
             const descs = [...new Set(entries.map(e=>e.desc))];
@@ -710,22 +925,15 @@
             document.querySelectorAll('input[name="islem"]').forEach(c => c.checked = e.tasks.includes(c.value));
             editingId = id;
             window.scrollTo({top:0, behavior:'smooth'});
-            showToast('Düzenleme modu');
+            showToast('Kayıt düzenleniyor...');
         }
 
         function deleteEntry(id) {
-            if(confirm('Silinecek emin misiniz?')) {
+            if(confirm('Bu kaydı silmek istediğinize emin misiniz?')) {
                 entries = entries.filter(x=>x.id!==id);
+                selectedIds.delete(id); // Remove from selection if deleted
                 save();
                 showToast('Kayıt silindi');
-            }
-        }
-        
-        function clearAllData() {
-            if(confirm('TÜM VERİ SİLİNECEK!')) {
-                entries = [];
-                save();
-                showToast('Veritabanı temizlendi', true);
             }
         }
 
@@ -736,8 +944,8 @@
 
         function showToast(m, err=false) {
             const t = document.getElementById('toast');
-            t.innerHTML = m;
-            t.style.background = err ? 'var(--danger)' : '#333';
+            t.innerHTML = (err ? '<i class="fas fa-exclamation-triangle"></i> ' : '<i class="fas fa-check-circle"></i> ') + m;
+            t.className = err ? 'error' : '';
             t.classList.add('show');
             setTimeout(()=>t.classList.remove('show'),3000);
         }
